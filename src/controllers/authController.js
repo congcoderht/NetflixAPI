@@ -1,0 +1,148 @@
+const AuthService = require('../services/AuthService');
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     AuthResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         message:
+ *           type: string
+ *         data:
+ *           type: object
+ *           properties:
+ *             user:
+ *               $ref: '#/components/schemas/User'
+ *             token:
+ *               type: string
+ *               description: JWT token
+ */
+class AuthController {
+  /**
+   * @swagger
+   * /api/auth/register:
+   *   post:
+   *     summary: Đăng ký tài khoản mới
+   *     tags: [Authentication]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - name
+   *               - email
+   *               - password
+   *             properties:
+   *               name:
+   *                 type: string
+   *                 example: Nguyễn Văn A
+   *               email:
+   *                 type: string
+   *                 example: user@example.com
+   *               password:
+   *                 type: string
+   *                 example: password123
+   *     responses:
+   *       201:
+   *         description: Đăng ký thành công
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/AuthResponse'
+   *       400:
+   *         description: Dữ liệu không hợp lệ
+   */
+  static async register(req, res, next) {
+    try {
+      const result = await AuthService.register(req.body);
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/auth/login:
+   *   post:
+   *     summary: Đăng nhập
+   *     tags: [Authentication]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - email
+   *               - password
+   *             properties:
+   *               email:
+   *                 type: string
+   *                 example: user@example.com
+   *               password:
+   *                 type: string
+   *                 example: password123
+   *     responses:
+   *       200:
+   *         description: Đăng nhập thành công
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/AuthResponse'
+   *       401:
+   *         description: Email hoặc mật khẩu không đúng
+   */
+  static async login(req, res, next) {
+    try {
+      const { email, password } = req.body;
+      const result = await AuthService.login(email, password);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * @swagger
+   * /api/auth/me:
+   *   get:
+   *     summary: Lấy thông tin user hiện tại
+   *     tags: [Authentication]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Thông tin user
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success:
+   *                   type: boolean
+   *                 data:
+   *                   $ref: '#/components/schemas/User'
+   *       401:
+   *         description: Chưa xác thực
+   */
+  static async getMe(req, res, next) {
+    try {
+      const userId = req.user.id;
+      const result = await AuthService.getCurrentUser(userId);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+module.exports = AuthController;
+
+
+
