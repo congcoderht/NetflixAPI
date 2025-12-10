@@ -13,17 +13,20 @@ class UserRepository {
 
   // Lấy user theo ID
   static async findById(id) {
-    const result = await execute(
-      'SELECT user_id, full_name, email FROM user WHERE user_id = ?',
-      [id]
-    );
+    const query = `
+      SELECT user_id, full_name, email, role, password
+      FROM [User]
+      WHERE user_id = ?
+    `;
+    
+    const result = await execute(query, [id]);
     return result.recordset[0];
   }
 
   // Lấy user theo email
   static async findByEmail(email) {
     const result = await execute(
-      'SELECT * FROM user WHERE email = ?',
+      'SELECT * FROM [User] WHERE email = ?',
       [email]
     );
     return result.recordset[0];
@@ -31,20 +34,18 @@ class UserRepository {
 
   // Tạo user mới
   static async create(userData) {
-    const { name, email, password } = userData;
+    const { username, email, password, full_name, role } = userData;
     const result = await execute(
-      'INSERT INTO user (full_name, email, password) OUTPUT INSERTED.user_id VALUES (?, ?, ?)',
-      [name, email, password]
+      'INSERT INTO [User] (username, email, password, full_name, role) OUTPUT INSERTED.user_id VALUES (?, ?, ?, ?, ?)',
+      [username, email, password, full_name, role]
     );
     const newUserId = result.recordset[0].user_id;
     return this.findById(newUserId);
   }
 
-
-
   // Kiểm tra email đã tồn tại chưa
   static async emailExists(email, excludeId = null) {
-    let query = 'SELECT COUNT(*) as count FROM users WHERE email = ?';
+    let query = 'SELECT COUNT(*) as count FROM [user] WHERE email = ?';
     const params = [email];
     
     if (excludeId) {
@@ -54,6 +55,14 @@ class UserRepository {
     
     const result = await execute(query, params);
     return result.recordset[0].count > 0;
+  }
+
+  // Đổi mật khẩu user
+  static async updatePassword(userId, hashedNewPassword) {
+    let query = 'UPDATE [User] SET password = ? WHERE user_id = ?';
+    const params = [hashedNewPassword, userId];
+    const result = await execute(query, params);
+    return result;
   }
 }
 
