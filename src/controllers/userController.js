@@ -100,7 +100,7 @@ class UserController {
         return res.status(400).json(result);
       }
 
-      res.json(result);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }

@@ -18,6 +18,7 @@ class UserRepository {
       FROM [User]
       WHERE user_id = ?
     `;
+    
     const result = await execute(query, [id]);
     return result.recordset[0];
   }
@@ -33,7 +34,6 @@ class UserRepository {
     const result = await execute(query, [id]);
     return result.recordset[0];
   }
-
 
   // Lấy user theo email
   static async findByEmail(email) {

@@ -1,5 +1,9 @@
 const UserRepository = require('../repositories/UserRepository');
+const OrderRepository = require('../repositories/OrderRepository');
+const SubRepository = require('../repositories/SubRepository');
+const UseryHistoryRepository = require('../repositories/UserHistoryRepository');
 const { hashPassword } = require('../utils/password');
+const UserHistoryRepository = require('../repositories/UserHistoryRepository');
 
 /**
  * Service Layer - Business Logic Layer
@@ -22,7 +26,7 @@ class UserService {
   // Lấy user theo ID
   static async getDetailedUserById(id) {
     try {
-      const userData = await UserRepository.findByIdPublic(id);
+      const user = await UserRepository.findByIdPublic(id);
       
       if (!user) {
         return {
@@ -32,9 +36,20 @@ class UserService {
         };
       }
 
+      const [orders, subscriptions, history] = await Promise.all([
+        OrderRepository.findByUserId(id),
+        SubRepository.findByUserId(id),
+        UserHistoryRepository.findByUserId(id),
+      ]);
+
       return {
         success: true,
-        data: user
+        data: {
+          user,
+          subscriptions: subscriptions || [],
+          orders: orders || [],
+          history: history || [],
+        }
       };
     } catch (error) {
       throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);
