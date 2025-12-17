@@ -46,7 +46,7 @@ class AuthService {
         email: email.trim().toLowerCase(),
         password: hashedPassword,
         full_name: full_name,
-        role: "customer"  
+        role: "customer",
       });
 
       const token = generateToken({
@@ -106,6 +106,15 @@ class AuthService {
           success: false,
           code: "INVALID_PASSWORD",
           message: "Mật khẩu không chính xác"
+        };
+      }
+
+      //kiểm tra status (ACTIVE/ LOCKED)
+      if(user.status === "LOCKED"){
+        return {
+          success: false,
+          code: "LOCKED",
+          message: "Tài khoản đã bị khóa"
         };
       }
 

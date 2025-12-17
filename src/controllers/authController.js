@@ -34,19 +34,22 @@ class AuthController {
    *           schema:
    *             type: object
    *             required:
-   *               - name
+   *               - username
    *               - email
    *               - password
    *             properties:
-   *               name:
+   *               username:
    *                 type: string
-   *                 example: Nguyễn Văn A
+   *                 example: VanAn17
    *               email:
    *                 type: string
    *                 example: user@example.com
    *               password:
    *                 type: string
    *                 example: password123
+   *               full_name:
+   *                 type: string
+   *                 example: Nguyen Van An
    *     responses:
    *       201:
    *         description: Đăng ký thành công
@@ -111,6 +114,7 @@ class AuthController {
             "EMAIL_NOT_FOUND": 401,
             "INVALID_PASSWORD": 401,
             "VALIDATION_ERROR": 400,
+            "LOCKED": 401,
           };
 
         const status = statusMap[result.code] || 400;

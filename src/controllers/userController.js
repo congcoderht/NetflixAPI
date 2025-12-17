@@ -51,6 +51,10 @@ class UserController {
   static async getAllUsers(req, res, next) {
     try {
       const result = await UserService.getAllUsers();
+
+      if(!result.success) {
+
+      }
       res.json(result);
     } catch (error) {
       next(error);
@@ -78,13 +82,45 @@ class UserController {
    *       404:
    *         description: Không tìm thấy user
    */
+  // xem chi tiết user
+  static async getDetailedUserById(req, res, next) {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID không hợp lệ'
+        });
+      }
+
+      const result = await UserService.getDetailedUserById(id);
+      
+      if (!result.success) {
+        return res.status(400).json(result);
+      }
+
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getUserById(req, res, next) {
     try {
-      const { id } = req.params;
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID không hợp lệ'
+        });
+      }
+
       const result = await UserService.getUserById(id);
       
       if (!result.success) {
-        return res.status(404).json(result);
+        return res.status(400).json(result);
       }
 
       res.json(result);
@@ -210,6 +246,44 @@ class UserController {
 
       res.json(result);
     } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateProfile(req, res, next) {
+    try {
+      const id = req.user.id;
+      const result = await UserService.updateProfile(id, req.body);
+
+      if(!result.success) {
+        return res.status(400).json(result);
+      }
+
+      res.status(201).json(result);
+    }catch(error) {
+      next(error);
+    }
+  }
+
+  static async updateStatus(req, res, next) {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID không hợp lệ'
+        });
+      }
+
+      const result = await UserService.updateStatus(id);
+
+      if(!result.success) {
+        return res.status(404).json(result);
+      }
+
+      return res.json(result);
+    }catch(error) {
       next(error);
     }
   }

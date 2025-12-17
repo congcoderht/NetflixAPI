@@ -11,17 +11,29 @@ class UserRepository {
     return result.recordset;
   }
 
+  // return for user
+  static async findByIdPublic(id) {
+    let query = `
+      SELECT user_id, full_name, email, avatar, role, status
+      FROM [User]
+      WHERE user_id = ?
+    `;
+    const result = await execute(query, [id]);
+    return result.recordset[0];
+  }
+
   // Lấy user theo ID
   static async findById(id) {
     const query = `
-      SELECT user_id, full_name, email, role, password
-      FROM [User]
+      SELECT user_id, full_name, email, role, password, status
+      FROM [User] 
       WHERE user_id = ?
     `;
     
     const result = await execute(query, [id]);
     return result.recordset[0];
   }
+
 
   // Lấy user theo email
   static async findByEmail(email) {
@@ -58,11 +70,47 @@ class UserRepository {
   }
 
   // Đổi mật khẩu user
-  static async updatePassword(userId, hashedNewPassword) {
+  static async updatePassword(id, hashedNewPassword) {
     let query = 'UPDATE [User] SET password = ? WHERE user_id = ?';
-    const params = [hashedNewPassword, userId];
+    const params = [hashedNewPassword, id];
     const result = await execute(query, params);
     return result;
+  }
+
+  static async updateProfile(id, userData) {
+    const {full_name, avatar} = userData;
+
+    const fields = [];
+    const params = [];
+
+    if(full_name !== undefined) {
+      fields.push('full_name = ?');
+      params.push(full_name);
+    } 
+
+    if(avatar !== undefined) {
+      fields.push('avatar = ?');
+      params.push(avatar);
+    }
+
+    if(fields.length === 0){
+      throw new Error("Không có dữ liệu để cập nhật");
+    }
+
+    let query = `UPDATE [User] SET ${fields.join(', ')} WHERE user_id = ?`;
+    params.push(id);
+
+    await execute(query, params);
+    return this.findByIdPublic(id);
+  }
+
+  // cập nhật trạng thái user (active/locked)
+  static async updateStatus(id, status) {
+  let query = 'UPDATE [User] SET status = ? WHERE user_id = ?';
+
+    const params = [status, id];
+    await execute(query, params);
+    return this.findByIdPublic(id);
   }
 }
 

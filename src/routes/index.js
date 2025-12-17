@@ -9,6 +9,7 @@ const adminAuthRoutes = require('./admin/adminAuthRoutes');
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 
+
 // Định tuyến routes admin
 router.use('/admin/auth', adminAuthRoutes)
 

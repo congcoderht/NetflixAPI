@@ -20,13 +20,9 @@ class UserService {
   }
 
   // Lấy user theo ID
-  static async getUserById(id) {
+  static async getDetailedUserById(id) {
     try {
-      if (!id || isNaN(id)) {
-        throw new Error('ID không hợp lệ');
-      }
-
-      const user = await UserRepository.findById(id);
+      const userData = await UserRepository.findByIdPublic(id);
       
       if (!user) {
         return {
@@ -44,54 +40,27 @@ class UserService {
       throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);
     }
   }
-
-  // Tạo user mới
-  static async createUser(userData) {
+  static async getUserById(id) {
     try {
-      const { name, email, password } = userData;
-
-      // Validation
-      if (!name || !email || !password) {
-        throw new Error('Vui lòng điền đầy đủ thông tin (name, email, password)');
+      const user = await UserRepository.findByIdPublic(id);
+      
+      if (!user) {
+        return {
+          success: false,
+          message: 'Không tìm thấy user',
+          data: null
+        };
       }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new Error('Email không hợp lệ');
-      }
-
-      // Kiểm tra email đã tồn tại chưa
-      const emailExists = await UserRepository.emailExists(email);
-      if (emailExists) {
-        throw new Error('Email đã được sử dụng');
-      }
-
-      // Validate password length
-      if (password.length < 6) {
-        throw new Error('Mật khẩu phải có ít nhất 6 ký tự');
-      }
-
-      // Hash password
-      const hashedPassword = await hashPassword(password);
-
-      // Tạo user
-      const newUser = await UserRepository.create({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        password: hashedPassword
-      });
 
       return {
         success: true,
-        message: 'User được tạo thành công',
-        data: newUser
+        data: user
       };
     } catch (error) {
-      throw new Error(`Lỗi khi tạo user: ${error.message}`);
+      throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);
     }
   }
-
+  
   // Cập nhật user
   static async updateUser(id, userData) {
     try {
@@ -178,6 +147,90 @@ class UserService {
     } catch (error) {
       throw new Error(`Lỗi khi xóa user: ${error.message}`);
     }
+  }
+
+  // cập nhật profile
+  static async updateProfile(id, userData) {
+    try {
+      const {full_name, avatar} = userData;
+      const existingUser = await UserRepository.findById(id);
+
+      if(!existingUser) {
+        return {
+          success: false,
+          message: "User Không tồn tại"
+        };
+      }
+
+      if (existingUser.status === 'LOCKED') {
+        return {
+          success: false,
+          message: 'Tài khoản đã bị khóa'
+        };
+      }
+
+      if (full_name !== undefined) {
+        if (typeof full_name !== 'string') {
+          return {
+            success: false,
+            message: 'Họ tên không hợp lệ'
+          };
+        }
+
+         if (full_name.trim() === '') {
+          return {
+            success: false,
+            message: 'Họ tên không được để trống'
+          }
+        };
+      }
+
+      const updateData = {};
+      if (full_name !== undefined) updateData.full_name = full_name;
+      if (avatar !== undefined) updateData.avatar = avatar;
+
+      const updateUser = await UserRepository.updateProfile(id, updateData);
+
+      if(!updateUser) {
+        throw new Error("Không thể cập nhật User");
+      }
+
+      return {
+        success: true,
+        message: "Cập nhật hồ sơ thành công",
+        data: updateUser
+      }
+    }catch(error) {
+      throw new Error(`Lỗi khi cập nhật User: ${error}`);
+    }
+  }
+
+
+  // khóa / mở khóa User
+  static async updateStatus(id) {
+    try {
+      const existingUser = await UserRepository.findById(id);
+
+      if(!existingUser) {
+        return {
+          success: false,
+          message: "User không tồn tại"
+        }
+      }
+
+      const newStatus = existingUser.status === "ACTIVE" ? "LOCKED" : "ACTIVE";
+
+      const updateUser = await UserRepository.updateStatus(id, newStatus);
+
+      return {
+        success: true,
+        message: "Cập nhật User thành công",
+        data: updateUser
+      }
+    }catch(error){
+      throw new Error(`Lỗi khi cập nhật trạng thái User: ${error.message}`);
+    }
+    
   }
 }
 
