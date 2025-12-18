@@ -20,6 +20,17 @@ class UserStatsService {
         throw new Error(`Lỗi khi lấy danh sách Users mới nhất: ${error}`);
     }
    }
+
+   static async getTodayNewUsers() {
+    try {
+        const todayNewUsers = await UserRepository.findTodayNewUsers();
+
+        return todayNewUsers;
+    }catch(error) {
+        throw new Error(`Lỗi khi lấy danh sách người dùng mới trong ngày ${error}`);
+    }
+
+   }
 }
 
 module.exports = UserStatsService;

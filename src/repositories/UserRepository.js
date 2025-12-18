@@ -57,6 +57,18 @@ class UserRepository {
     return result.recordset;
   }
 
+  // lấy danh sách người đăng kí mới trong ngày
+  static async findTodayNewUsers() {
+    let query = `
+      SELECT COUNT (*) AS total
+      FROM [User] 
+      WHERE created_at >= CAST(GETDATE() AS DATE)
+        AND created_at < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+    `;
+    const result = await execute(query);
+    return result.recordset[0].total;
+  }
+
   // lấy tổng số lượng user
   static async getTotal() {
     let query = 'SELECT COUNT (*) AS total FROM [User]';
