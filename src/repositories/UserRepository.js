@@ -57,8 +57,8 @@ class UserRepository {
     return result.recordset;
   }
 
-  // lấy danh sách người đăng kí mới trong ngày
-  static async findTodayNewUsers() {
+  // lấy số người đăng kí mới trong ngày
+  static async countTodayNewUsers() {
     let query = `
       SELECT COUNT (*) AS total
       FROM [User] 

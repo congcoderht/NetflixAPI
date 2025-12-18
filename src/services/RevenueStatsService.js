@@ -2,6 +2,10 @@ const OrderRepository = require("../repositories/OrderRepository");
 
 class RevenueStatsService {
 
+    static async getOverview() {
+        
+    }
+
     static async getRevenueByDayinCurrentMonth() {
         try {
             const rows = await OrderRepository.revenueByDayInCurrentMonth();

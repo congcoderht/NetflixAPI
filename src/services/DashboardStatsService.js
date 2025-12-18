@@ -1,20 +1,23 @@
 const RevenueStatsService = require('./RevenueStatsService');
 const UserStatsService = require ('./UserStatsService');
+const ViewStatsService = require('../services/ViewStatsService');
 
 class DashboardStatsService {
     static async getOverview() {
-        const [totalUsers, newUsers, totalTodayNewUsers, revenueByDayinCurrentMonth] = await Promise.all([
+        const [totalUsers, totalTodayNewUsers, newUsers, todayViews, revenueByDayinCurrentMonth] = await Promise.all([
             UserStatsService.getTotalUsers(),
-            UserStatsService.getNewUsers(),
             UserStatsService.getTodayNewUsers(),
-            RevenueStatsService.getRevenueByDayinCurrentMonth()
+            UserStatsService.getNewUsers(),
+            ViewStatsService.getTodayViews(),
+            RevenueStatsService.getRevenueByDayinCurrentMonth(),
         ]);
 
         return {
             success: true,
             totalUsers,
-            newUsers,
             totalTodayNewUsers,
+            todayViews,
+            newUsers,
             revenueByDayinCurrentMonth
         }
     }

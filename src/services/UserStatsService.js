@@ -23,11 +23,11 @@ class UserStatsService {
 
    static async getTodayNewUsers() {
     try {
-        const todayNewUsers = await UserRepository.findTodayNewUsers();
+        const todayNewUsers = await UserRepository.countTodayNewUsers();
 
         return todayNewUsers;
     }catch(error) {
-        throw new Error(`Lỗi khi lấy danh sách người dùng mới trong ngày ${error}`);
+        throw new Error(`Lỗi khi lấy danh sách người dùng mới trong ngày ${error}`)
     }
 
    }

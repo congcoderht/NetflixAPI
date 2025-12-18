@@ -12,6 +12,18 @@ class UserHistoryRepository {
         const result = await execute(query, [id]);
         return result.recordset;
     }
+
+    static async countViewsToday() {
+        let query = `
+            SELECT COUNT(*) AS total
+            FROM User_History 
+            WHERE last_watched_at >= CAST(GETDATE() AS DATE)
+                AND last_watched_at < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+        `;
+
+        const result = await execute(query);
+        return result.recordset[0].total;
+    }
 }
 
 module.exports = UserHistoryRepository;
