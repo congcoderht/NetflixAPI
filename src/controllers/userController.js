@@ -59,7 +59,7 @@ class UserController {
         pageNumber = 1;
       }
 
-      if (!Number.isInteger(limitNumber)) {
+      if (!Number.isInteger(limitNumber) || limitNumber < 1) {
         limitNumber = 10;
       }
 

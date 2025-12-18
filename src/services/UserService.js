@@ -3,11 +3,15 @@ const OrderRepository = require('../repositories/OrderRepository');
 const SubRepository = require('../repositories/SubRepository');
 const { hashPassword } = require('../utils/password');
 const UserHistoryRepository = require('../repositories/UserHistoryRepository');
+const { generateOrderCode } = require('../utils/orderCode');
 
 /**
  * Service Layer - Business Logic Layer
  * Chịu trách nhiệm xử lý logic nghiệp vụ, validation, và điều phối giữa Repository và Controller
  */
+
+const MAX_LIMIT = 50;
+
 class UserService {
   // Lấy tất cả users
   static async getAllUsers(params) {
@@ -15,8 +19,8 @@ class UserService {
       let {search, page, limit, status} = params;
       
       page = Math.max(1, page);
-      limit = Math.min(limit , 50);
-      
+      limit = Math.min(limit , MAX_LIMIT);
+
       const offset = (page - 1) * limit;
 
       const {rows, total} = await UserRepository.findAll({
