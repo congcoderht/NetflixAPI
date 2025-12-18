@@ -15,6 +15,21 @@ class OrderRepository {
         const result = await execute(query, [id]);
         return result.recordset;
     }
+
+    // lấy doanh thu theo ngày trong tháng hiện tại
+    static async revenueByDayInCurrentMonth() {
+        let query = `
+            SELECT CAST(paid_at AS DATE) as date, SUM(amount) AS revenue
+            FROM Orders
+            WHERE status = 'PAID'
+                AND paid_at >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
+                AND paid_at < DATEADD(MONTH, 1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1))
+            GROUP BY CAST(paid_at AS DATE)
+            ORDER BY date
+        `;
+        const result = await execute(query);
+        return result.recordset;
+    }
 }
 
 module.exports = OrderRepository;
