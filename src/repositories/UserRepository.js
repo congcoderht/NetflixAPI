@@ -1,3 +1,4 @@
+const { rows } = require('mssql');
 const { execute } = require('../config/database');
 
 /**
@@ -6,9 +7,41 @@ const { execute } = require('../config/database');
  */
 class UserRepository {
   // Lấy tất cả users
-  static async findAll() {
-    const result = await execute('SELECT user_id, full_name, email FROM user');
-    return result.recordset;
+  static async findAll({search, limit, status, offset}) {
+    let where = 'WHERE 1=1'
+    const params = [];
+  
+    if(search) {
+      where += ' AND (full_name LIKE ? OR email LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`);
+    }
+
+    if(status) {
+      where += ' AND status = ?';
+      params.push(`${status}`);
+    }
+
+    const dataQuery = `
+      SELECT user_id, username, full_name, email, role, avatar, status
+      FROM [User]
+      ${where}
+      ORDER BY user_id DESC
+      OFFSET ? ROWS FETCH NEXT ? ROWS ONLY 
+    `;
+
+    const countQuery = `
+      SELECT COUNT(*) AS total
+      FROM [User]
+      ${where}
+    ` 
+    const dataResult = await execute(dataQuery, [...params, offset, limit])
+    const countResult = await execute(countQuery, params);
+
+    return {
+      rows: dataResult.recordset,
+      total: countResult.recordset[0].total
+
+    };
   }
 
   // return for user
@@ -18,7 +51,7 @@ class UserRepository {
       FROM [User]
       WHERE user_id = ?
     `;
-    
+
     const result = await execute(query, [id]);
     return result.recordset[0];
   }

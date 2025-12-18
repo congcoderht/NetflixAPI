@@ -1,7 +1,6 @@
 const UserRepository = require('../repositories/UserRepository');
 const OrderRepository = require('../repositories/OrderRepository');
 const SubRepository = require('../repositories/SubRepository');
-const UseryHistoryRepository = require('../repositories/UserHistoryRepository');
 const { hashPassword } = require('../utils/password');
 const UserHistoryRepository = require('../repositories/UserHistoryRepository');
 
@@ -11,12 +10,36 @@ const UserHistoryRepository = require('../repositories/UserHistoryRepository');
  */
 class UserService {
   // Lấy tất cả users
-  static async getAllUsers() {
+  static async getAllUsers(params) {
     try {
-      const users = await UserRepository.findAll();
+      let {search, page, limit, status} = params;
+      
+      page = Math.max(1, page);
+      limit = Math.min(limit , 50);
+      
+      const offset = (page - 1) * limit;
+
+      const {rows, total} = await UserRepository.findAll({
+        search, 
+        page,
+        limit,
+        status,
+        offset
+      });
+
+      const totalPages = Math.ceil(total / limit);
+
       return {
         success: true,
-        data: users
+        data: {
+          items: rows,
+          pagination: {
+            page,
+            limit,
+            totalItems: total,
+            totalPages
+          }
+        }
       };
     } catch (error) {
       throw new Error(`Lỗi khi lấy danh sách users: ${error.message}`);

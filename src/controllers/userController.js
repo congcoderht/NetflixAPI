@@ -50,12 +50,31 @@ class UserController {
    */
   static async getAllUsers(req, res, next) {
     try {
-      const result = await UserService.getAllUsers();
+      const {search = '', page = 1, limit = 10, status} = req.query;
+
+      let pageNumber = Number(page);
+      let limitNumber = Number(limit);
+
+      if (!Number.isInteger(pageNumber)) {
+        pageNumber = 1;
+      }
+
+      if (!Number.isInteger(limitNumber)) {
+        limitNumber = 10;
+      }
+
+      const result = await UserService.getAllUsers({
+        search,
+        page: pageNumber,
+        limit: limitNumber,
+        status,
+      });
 
       if(!result.success) {
-
+        return res.status(400).json(result);
       }
-      res.json(result);
+
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
