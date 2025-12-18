@@ -11,9 +11,8 @@ router.get('/:id', verifyAdmin, UserController.getDetailedUserById);
 // router.post('/', UserController.createUser);
 router.put('/profile', UserController.updateProfile);
 // router.put('/:id', UserController.updateUser);
-router.delete('/:id', UserController.deleteUser);
+// router.delete('/:id', UserController.deleteUser);
 
-// routes cần cấp quyền admin
 router.put('/:id/status', verifyAdmin, UserController.updateStatus);
 
 module.exports = router;

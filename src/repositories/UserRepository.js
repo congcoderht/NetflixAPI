@@ -5,6 +5,8 @@ const { execute } = require('../config/database');
  * Repository Layer - Data Access Layer
  * Chịu trách nhiệm tương tác trực tiếp với database
  */
+const TOP_NEW_USERS = 3;
+
 class UserRepository {
   // Lấy tất cả users
   static async findAll({search, limit, status, offset}) {
@@ -44,6 +46,24 @@ class UserRepository {
     };
   }
 
+  //lấy các user đăng kí mới nhất
+  static async findNewUsers() {
+    let query = `
+      SELECT TOP 3 user_id, full_name, email, username, created_at, status 
+      FROM [User]
+      ORDER BY created_at DESC
+    `;
+    const result = await execute(query);
+    return result.recordset;
+  }
+
+  // lấy tổng số lượng user
+  static async getTotal() {
+    let query = 'SELECT COUNT (*) AS total FROM [User]';
+    const result = await execute(query);
+    return result.recordset[0].total;
+  }
+
   // return for user
   static async findByIdPublic(id) {
     let query = `
@@ -58,7 +78,7 @@ class UserRepository {
 
   // Lấy user theo ID
   static async findById(id) {
-    const query = `
+    let query = `
       SELECT user_id, full_name, email, role, password, status
       FROM [User] 
       WHERE user_id = ?
@@ -139,7 +159,7 @@ class UserRepository {
 
   // cập nhật trạng thái user (active/locked)
   static async updateStatus(id, status) {
-  let query = 'UPDATE [User] SET status = ? WHERE user_id = ?';
+    let query = 'UPDATE [User] SET status = ? WHERE user_id = ?';
 
     const params = [status, id];
     await execute(query, params);

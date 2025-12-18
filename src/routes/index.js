@@ -4,10 +4,12 @@ const userRoutes = require('./userRoutes');
 const authRoutes = require('./authRoutes');
 
 const adminAuthRoutes = require('./admin/adminAuthRoutes');
+const adminStatsRoutes = require('./admin/adminStatsRoutes');
 
 // Định tuyến các routes
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+router.use('/stats', adminStatsRoutes);
 
 
 // Định tuyến routes admin
