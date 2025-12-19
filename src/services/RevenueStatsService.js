@@ -1,14 +1,17 @@
-const OrderRepository = require("../repositories/OrderRepository");
+const OrderRepository = require('../repositories/OrderRepository');
+const UserHistoryService = require('../services/ViewStatsService');
 
 class RevenueStatsService {
 
     static async getOverview() {
-        const [subscriptionsRevenue] = await Promise.all([
-            this.getSubscriptionsRevenue()
+        const [subscriptionsRevenue, viewsOverTime] = await Promise.all([
+            this.getSubscriptionsRevenue(),
+            UserHistoryService.getOverview()
         ])
         return {
             success: true,
-            subscriptionsRevenue
+            subscriptionsRevenue,
+            viewsOverTime,
         }
     }
 

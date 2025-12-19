@@ -24,6 +24,17 @@ class UserHistoryRepository {
         const result = await execute(query);
         return result.recordset[0].total;
     }
+
+    static async countViewsThisMonth() {
+        let query = `
+            SELECT COUNT(*) AS total
+            FROM User_History 
+            WHERE last_watched_at >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
+                AND last_watched_at < DATEADD(MONTH, 1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1))
+        `;
+        const result = await execute(query);
+        return result.recordset[0].total;
+    }
 }
 
 module.exports = UserHistoryRepository;
