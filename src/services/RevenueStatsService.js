@@ -3,7 +3,33 @@ const OrderRepository = require("../repositories/OrderRepository");
 class RevenueStatsService {
 
     static async getOverview() {
-        
+        const [subscriptionsRevenue] = await Promise.all([
+            this.getSubscriptionsRevenue()
+        ])
+        return {
+            success: true,
+            subscriptionsRevenue
+        }
+    }
+
+    static async getSubscriptionsRevenue() {
+        try {
+            const [today, this_week, this_month, last_Month] = await Promise.all([
+               OrderRepository.sumRevenueToday(),
+               OrderRepository.sumRevenueThisWeek(),
+               OrderRepository.sumRevenueThisMonth(),
+               OrderRepository.sumRevenueLastMonth()
+           ]);
+
+           return {
+                today,
+                this_week,
+                this_month,
+                last_Month,
+           }
+        }catch(error) {
+            throw new Error(`Lỗi khi lấy doanh thu gói đăng kí: ${error}`);
+        }
     }
 
     static async getRevenueByDayinCurrentMonth() {

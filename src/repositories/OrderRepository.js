@@ -30,6 +30,63 @@ class OrderRepository {
         const result = await execute(query);
         return result.recordset;
     }
+
+    // lấy doanh thu của ngày hiện tại
+    static async sumRevenueToday() {
+        let query = `
+            SELECT SUM(amount) AS total
+            FROM Orders 
+            WHERE status = 'PAID'
+                AND paid_at >= CAST(GETDATE() AS DATE)
+                AND paid_at < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+        `;
+        const result = await execute(query);
+        return result.recordset[0].total;
+    }
+
+    // lấy doanh thu tuần tháng hiện tại
+    static async sumRevenueThisWeek() {
+        let query = `
+            SET DATEFIRST 1;
+
+            SELECT SUM(amount) AS total
+            FROM Orders 
+            WHERE status = 'PAID'
+               AND paid_at >= DATEADD(DAY, 1 - DATEPART(WEEKDAY, CAST(GETDATE() AS DATE)), CAST(GETDATE() AS DATE))
+        `;
+        const result = await execute(query);
+        return result.recordset[0].total;
+    }
+
+    //lấy doanh thu theo tháng hiện tại
+    static async sumRevenueThisMonth() {
+        let query = `
+            SELECT SUM(amount) AS total
+            FROM Orders
+            WHERE status = 'PAID'
+                AND paid_at >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
+                AND paid_at <  DATEADD(MONTH, 1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1))
+        `;
+        const result = await execute(query);
+        return result.recordset[0].total;
+    }
+
+    static async sumRevenueLastMonth() {
+        let query = `
+            SELECT SUM(amount) AS total
+            FROM Orders
+            WHERE status = 'PAID'
+                AND paid_at >= DATEADD(
+                    MONTH, 
+                    -1, 
+                    DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
+                )
+                AND paid_at < DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
+        `;
+        const result = await execute(query);
+        return result.recordset[0].total;
+    }
+
 }
 
 module.exports = OrderRepository;
