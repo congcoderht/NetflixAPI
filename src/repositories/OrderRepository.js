@@ -44,7 +44,7 @@ class OrderRepository {
         return result.recordset[0].total;
     }
 
-    // lấy doanh thu tuần tháng hiện tại
+    // lấy doanh thu của tuần hiện tại
     static async sumRevenueThisWeek() {
         let query = `
             SET DATEFIRST 1;
@@ -58,7 +58,7 @@ class OrderRepository {
         return result.recordset[0].total;
     }
 
-    //lấy doanh thu theo tháng hiện tại
+    //lấy doanh thu của tháng hiện tại
     static async sumRevenueThisMonth() {
         let query = `
             SELECT SUM(amount) AS total
@@ -71,6 +71,7 @@ class OrderRepository {
         return result.recordset[0].total;
     }
 
+    // lấy doanh thu của tháng trước
     static async sumRevenueLastMonth() {
         let query = `
             SELECT SUM(amount) AS total
@@ -82,6 +83,18 @@ class OrderRepository {
                     DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
                 )
                 AND paid_at < DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
+        `;
+        const result = await execute(query);
+        return result.recordset[0].total;
+    }
+
+    static async sumRevenueThisYear() {
+        let query = `
+            SELECT SUM(amount) AS total
+            FROM Orders 
+            WHERE status = 'PAID'
+                AND paid_at >= DATEFROMPARTS(YEAR(GETDATE()), 1, 1)
+                AND paid_at <= DATEFROMPARTS(YEAR(GETDATE()) + 1, 1, 1)
         `;
         const result = await execute(query);
         return result.recordset[0].total;

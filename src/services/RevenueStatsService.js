@@ -14,11 +14,12 @@ class RevenueStatsService {
 
     static async getSubscriptionsRevenue() {
         try {
-            const [today, this_week, this_month, last_Month] = await Promise.all([
+            const [today, this_week, this_month, last_Month, this_year] = await Promise.all([
                OrderRepository.sumRevenueToday(),
                OrderRepository.sumRevenueThisWeek(),
                OrderRepository.sumRevenueThisMonth(),
-               OrderRepository.sumRevenueLastMonth()
+               OrderRepository.sumRevenueLastMonth(),
+               OrderRepository.sumRevenueThisYear()
            ]);
 
            return {
@@ -26,6 +27,7 @@ class RevenueStatsService {
                 this_week,
                 this_month,
                 last_Month,
+                this_year
            }
         }catch(error) {
             throw new Error(`Lỗi khi lấy doanh thu gói đăng kí: ${error}`);
