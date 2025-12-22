@@ -1,42 +1,27 @@
+const CastMemberRepository = require('../repositories/CastMemberRepository');
 const OrderRepository = require('../repositories/OrderRepository');
+const UserRepository = require('../repositories/UserRepository');
 const UserHistoryService = require('../services/ViewStatsService');
 const MovieStatsService = require('./MovieStatsService');
+const OrderStatsService = require('./OrderStatsService');
 
 class RevenueStatsService {
 
     static async getOverview() {
-        const [subscriptionsRevenue, viewsOverTime, mostWatchTimeMovies] = await Promise.all([
-            this.getSubscriptionsRevenue(),
+        const [subscriptionsRevenue, totalNewUsersLast30Days, viewsOverTime, mostWatchTimeMovies, mostWatchedMembers] = await Promise.all([
+            OrderStatsService.getSubscriptionsRevenue(),
+            UserRepository.countNewUsersLast30Days(),
             UserHistoryService.getOverview(),
             MovieStatsService.getMostWatchTime(),
+            MovieStatsService.getMostWatchedMembers(),
         ])
         return {
             success: true,
             subscriptionsRevenue,
+            totalNewUsersLast30Days,
             viewsOverTime,
-            mostWatchTimeMovies
-        }
-    }
-
-    static async getSubscriptionsRevenue() {
-        try {
-            const [today, this_week, this_month, last_Month, this_year] = await Promise.all([
-               OrderRepository.sumRevenueToday(),
-               OrderRepository.sumRevenueThisWeek(),
-               OrderRepository.sumRevenueThisMonth(),
-               OrderRepository.sumRevenueLastMonth(),
-               OrderRepository.sumRevenueThisYear()
-           ]);
-
-           return {
-                today,
-                this_week,
-                this_month,
-                last_Month,
-                this_year
-           }
-        }catch(error) {
-            throw new Error(`Lỗi khi lấy doanh thu gói đăng kí: ${error}`);
+            mostWatchTimeMovies,
+            mostWatchedMembers
         }
     }
 

@@ -1,3 +1,4 @@
+const CastMemberRepository = require('../repositories/CastMemberRepository');
 const MovieRepository = require('../repositories/MovieRepository');
 
 class MovieStatsService {
@@ -39,6 +40,16 @@ class MovieStatsService {
             return result;
         }catch(error) {
             throw new Error(`Lỗi khi lấy danh sách phim có tổng thời gian xem cao nhất: ${error}`);
+        }
+    }
+
+    static async getMostWatchedMembers() {
+        try {
+            const result = CastMemberRepository.findMostWatchedMembers();
+
+            return result;
+        }catch(error) {
+            throw new Error(`Lỗi khi lấy diễn viên được xem nhiều nhất`)
         }
     }
 }

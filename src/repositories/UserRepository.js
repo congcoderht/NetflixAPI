@@ -69,13 +69,12 @@ class UserRepository {
     return result.recordset[0].total;
   }
 
-  // lấy số người đăng kí mới trong ngày
-  static async countTodayNewUsers() {
+  // lấy số người đăng kí mới trong 30 ngày qua
+  static async countNewUsersLast30Days() {
     let query = `
       SELECT COUNT (*) AS total
       FROM [User] 
-      WHERE created_at >= CAST(GETDATE() AS DATE)
-        AND created_at < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+      WHERE created_at >= DATEADD(DAY, -30, CAST(GETDATE() AS DATE))
     `;
     const result = await execute(query);
     return result.recordset[0].total;
