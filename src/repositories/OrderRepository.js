@@ -19,7 +19,7 @@ class OrderRepository {
     // lấy doanh thu theo ngày trong tháng hiện tại
     static async revenueByDayInCurrentMonth() {
         let query = `
-            SELECT CAST(paid_at AS DATE) as date, SUM(amount) AS revenue
+            SELECT CAST(paid_at AS DATE) as date, COALESCE(SUM(amount), 0) AS revenue
             FROM Orders
             WHERE status = 'PAID'
                 AND paid_at >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
@@ -34,7 +34,7 @@ class OrderRepository {
     // lấy doanh thu của ngày hiện tại
     static async sumRevenueToday() {
         let query = `
-            SELECT SUM(amount) AS total
+            SELECT COALESCE(SUM(amount), 0) AS total
             FROM Orders 
             WHERE status = 'PAID'
                 AND paid_at >= CAST(GETDATE() AS DATE)
@@ -49,7 +49,7 @@ class OrderRepository {
         let query = `
             SET DATEFIRST 1;
 
-            SELECT SUM(amount) AS total
+            SELECT COALESCE(SUM(amount), 0) AS total
             FROM Orders 
             WHERE status = 'PAID'
                AND paid_at >= DATEADD(DAY, 1 - DATEPART(WEEKDAY, CAST(GETDATE() AS DATE)), CAST(GETDATE() AS DATE))
@@ -61,7 +61,7 @@ class OrderRepository {
     //lấy doanh thu của tháng hiện tại
     static async sumRevenueThisMonth() {
         let query = `
-            SELECT SUM(amount) AS total
+            SELECT COALESCE(SUM(amount), 0) AS total
             FROM Orders
             WHERE status = 'PAID'
                 AND paid_at >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
@@ -74,7 +74,7 @@ class OrderRepository {
     // lấy doanh thu của tháng trước
     static async sumRevenueLastMonth() {
         let query = `
-            SELECT SUM(amount) AS total
+            SELECT COALESCE(SUM(amount), 0) AS total
             FROM Orders
             WHERE status = 'PAID'
                 AND paid_at >= DATEADD(
@@ -90,7 +90,7 @@ class OrderRepository {
 
     static async sumRevenueThisYear() {
         let query = `
-            SELECT SUM(amount) AS total
+            SELECT COALESCE(SUM(amount), 0) AS total
             FROM Orders 
             WHERE status = 'PAID'
                 AND paid_at >= DATEFROMPARTS(YEAR(GETDATE()), 1, 1)

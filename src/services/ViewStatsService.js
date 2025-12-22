@@ -14,14 +14,20 @@ class ViewStatsService {
 
     static async getOverview() {
         try {
-            const [today, this_month] = await Promise.all([
+            const [today, this_week, this_month, last_Month, this_year] = await Promise.all([
                 UserHistoryRepository.countViewsToday(),
+                UserHistoryRepository.countViewsThisWeek(),
                 UserHistoryRepository.countViewsThisMonth(),
+                UserHistoryRepository.countViewsLastMonth(),
+                UserHistoryRepository.countViewThisYear()
             ])
 
             return {
                 today,
-                this_month
+                this_week,
+                this_month,
+                last_Month, 
+                this_year
             }
         }catch(error) {
             throw new Error(`Lỗi khi lấy báo cáo lượt xem: ${error}`);
