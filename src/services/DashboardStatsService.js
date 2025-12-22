@@ -10,13 +10,18 @@ class DashboardStatsService {
             totalTodayNewUsers, 
             newUsers, 
             todayViews,
+            totalMovies,
             MostWatchedMovies,
-            revenueByDayinCurrentMonth] = await Promise.all([
+            HighestRatedMovies,
+            revenueByDayinCurrentMonth
+        ] = await Promise.all([
             UserStatsService.getTotalUsers(),
             UserStatsService.getTodayNewUsers(),
             UserStatsService.getNewUsers(),
             ViewStatsService.getTodayViews(),
+            MovieStatsService.getTotal(),
             MovieStatsService.getMostWatch(),
+            MovieStatsService.getHighRating(),
             RevenueStatsService.getRevenueByDayinCurrentMonth(),
         ]);
 
@@ -26,7 +31,9 @@ class DashboardStatsService {
             totalTodayNewUsers,
             newUsers,
             todayViews,
+            totalMovies,
             MostWatchedMovies,
+            HighestRatedMovies,
             revenueByDayinCurrentMonth
         }
     }
