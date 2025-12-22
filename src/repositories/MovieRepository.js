@@ -7,7 +7,7 @@ class MovieRepository {
         let query = `
             SELECT COUNT(movie_id) AS total
             FROM Movie
-        `
+        `;
         const result = await execute(query);
         return result.recordset[0].total;
     }
@@ -29,7 +29,7 @@ class MovieRepository {
                 m.trailer_url,
                 m.url_phim
             ORDER BY total_views DESC;
-        `
+        `;
         const result = await execute(query);
         return result.recordset;
     }
@@ -52,7 +52,29 @@ class MovieRepository {
                 m.trailer_url,
                 m.url_phim
             ORDER BY avg_rating DESC, rating_count DESC
-        `
+        `;
+        const result = await execute(query);
+        return result.recordset;
+    }
+
+    // top phim có watch_time cao nhất
+    static async findMostWatchTime() {
+        let query = `
+            SELECT TOP 10 
+                m.*,
+                COALESCE(SUM(uh.time), 0) AS total_watch_time
+            FROM User_History uh
+            JOIN Movie AS m ON m.movie_id = uh.movie_id
+            GROUP BY
+                m.movie_id,
+                m.title,
+                m.description,
+                m.release_year,
+                m.poster_url,
+                m.trailer_url,
+                m.url_phim
+            ORDER BY total_watch_time DESC
+        `;
         const result = await execute(query);
         return result.recordset;
     }

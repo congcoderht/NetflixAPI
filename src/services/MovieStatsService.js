@@ -31,6 +31,16 @@ class MovieStatsService {
             throw new Error(`Lỗi khi lấy danh sách phim được đánh giá cao nhất: ${error}`);
         }
     }
+
+    static async getMostWatchTime() {
+        try {
+            const result = MovieRepository.findMostWatchTime();
+
+            return result;
+        }catch(error) {
+            throw new Error(`Lỗi khi lấy danh sách phim có tổng thời gian xem cao nhất: ${error}`);
+        }
+    }
 }
 
 module.exports = MovieStatsService;
