@@ -69,6 +69,28 @@
       "bearerAuth": []
     }
   ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and authorization"
+    },
+    {
+      "name": "Users",
+      "description": "User profile and management"
+    },
+    {
+      "name": "Admin",
+      "description": "Admin operations"
+    },
+    {
+      "name": "Statistics",
+      "description": "Analytics and statistics"
+    },
+    {
+      "name": "General",
+      "description": "General endpoints"
+    }
+  ],
   "paths": {
     "/health": {
       "get": {
@@ -77,7 +99,10 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": [
+          "General"
+        ]
       }
     },
     "/api/": {
@@ -87,7 +112,10 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": [
+          "General"
+        ]
       }
     },
     "/api/auth/register": {
@@ -97,7 +125,10 @@
           "201": {
             "description": "Created"
           }
-        }
+        },
+        "tags": [
+          "Authentication"
+        ]
       }
     },
     "/api/auth/login": {
@@ -108,6 +139,9 @@
             "description": "OK"
           }
         },
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -150,6 +184,9 @@
             "description": "Unauthorized"
           }
         },
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -188,7 +225,10 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "tags": [
+          "Authentication"
+        ]
       }
     },
     "/api/users/": {
@@ -244,7 +284,10 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "tags": [
+          "Users"
+        ]
       }
     },
     "/api/users/{id}": {
@@ -280,7 +323,10 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "tags": [
+          "Users"
+        ]
       }
     },
     "/api/users/profile": {
@@ -305,7 +351,10 @@
           "401": {
             "description": "Unauthorized"
           }
-        }
+        },
+        "tags": [
+          "Users"
+        ]
       }
     },
     "/api/users/{id}/status": {
@@ -344,7 +393,10 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "tags": [
+          "Users"
+        ]
       }
     },
     "/api/stats/dashboard": {
@@ -369,7 +421,10 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "tags": [
+          "Statistics"
+        ]
       }
     },
     "/api/stats/revenue": {
@@ -394,7 +449,10 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "tags": [
+          "Statistics"
+        ]
       }
     },
     "/api/admin/auth/login": {
@@ -405,6 +463,9 @@
             "description": "OK"
           }
         },
+        "tags": [
+          "Authentication"
+        ],
         "requestBody": {
           "content": {
             "application/json": {

@@ -47,6 +47,15 @@ const doc = {
   security: [{ bearerAuth: [] }]
 };
 
+// Tag mappings based on path patterns
+const getTagForPath = (pathKey) => {
+  if (pathKey.includes('/auth')) return 'Authentication';
+  if (pathKey.includes('/admin')) return 'Admin';
+  if (pathKey.includes('/stats')) return 'Statistics';
+  if (pathKey.includes('/users')) return 'Users';
+  return 'General';
+};
+
 const convertToOAS31 = (spec) => {
   const oas = {};
   oas.openapi = '3.1.0';
@@ -54,6 +63,16 @@ const convertToOAS31 = (spec) => {
   oas.servers = [ { url: `http://localhost:${process.env.PORT || 3000}` } ];
   oas.components = spec.components || {};
   if (spec.security) oas.security = spec.security;
+  
+  // Define tags for grouping endpoints
+  oas.tags = [
+    { name: 'Authentication', description: 'User authentication and authorization' },
+    { name: 'Users', description: 'User profile and management' },
+    { name: 'Admin', description: 'Admin operations' },
+    { name: 'Statistics', description: 'Analytics and statistics' },
+    { name: 'General', description: 'General endpoints' }
+  ];
+  
   oas.paths = {};
 
   for (const [pathKey, methods] of Object.entries(spec.paths || {})) {
@@ -62,6 +81,9 @@ const convertToOAS31 = (spec) => {
       const newOp = Object.assign({}, op);
       const params = [];
       let requestBody = null;
+
+      // Add tag based on path
+      newOp.tags = [getTagForPath(pathKey)];
 
       if (Array.isArray(op.parameters)) {
         for (const p of op.parameters) {
