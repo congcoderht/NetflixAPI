@@ -3,8 +3,9 @@ const path = require('path');
 const swaggerAutogen = require('swagger-autogen')();
 
 const outputFile = './swagger_output.json';
-// Include server file so mount prefixes (e.g. /api) are captured
-const endpointsFiles = ['./src/server.js', './src/routes/*.js', './src/routes/**/*.js'];
+// Only scan server.js; it already mounts all routes with correct prefixes.
+// Scanning individual route files creates duplicate endpoints.
+const endpointsFiles = ['./src/server.js'];
 
 const doc = {
   info: {
