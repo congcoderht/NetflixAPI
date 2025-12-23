@@ -81,6 +81,7 @@ const convertToOAS31 = (spec) => {
       const newOp = Object.assign({}, op);
       const params = [];
       let requestBody = null;
+      let hasAuthHeader = false;
 
       // Add tag based on path
       newOp.tags = [getTagForPath(pathKey)];
@@ -90,6 +91,12 @@ const convertToOAS31 = (spec) => {
           if (p.in === 'body') {
             requestBody = requestBody || { content: { 'application/json': { schema: p.schema || { type: 'object' } } } };
           } else {
+            // If the parameter is the Authorization header, skip it and mark for security
+            if (p.in === 'header' && typeof p.name === 'string' && p.name.toLowerCase() === 'authorization') {
+              hasAuthHeader = true;
+              continue;
+            }
+
             const param = Object.assign({}, p);
             if (!param.schema) {
               const schema = {};
@@ -106,6 +113,11 @@ const convertToOAS31 = (spec) => {
       else delete newOp.parameters;
 
       if (requestBody) newOp.requestBody = requestBody;
+
+      // If the operation previously required an Authorization header, use security scheme instead
+      if (hasAuthHeader) {
+        newOp.security = [{ bearerAuth: [] }];
+      }
 
       newOp.responses = newOp.responses || { '200': { description: 'OK' } };
 

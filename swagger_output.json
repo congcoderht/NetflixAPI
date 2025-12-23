@@ -164,15 +164,6 @@
     "/api/auth/change-pass": {
       "put": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -203,21 +194,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/auth/me": {
       "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -228,6 +215,11 @@
         },
         "tags": [
           "Authentication"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
@@ -235,13 +227,6 @@
       "get": {
         "description": "",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "search",
             "in": "query",
@@ -287,6 +272,11 @@
         },
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
@@ -298,13 +288,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "schema": {
               "type": "string"
             }
@@ -326,21 +309,17 @@
         },
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
     "/api/users/profile": {
       "put": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -354,6 +333,11 @@
         },
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
@@ -365,13 +349,6 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
             "schema": {
               "type": "string"
             }
@@ -396,21 +373,17 @@
         },
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
     "/api/stats/dashboard": {
       "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -424,21 +397,17 @@
         },
         "tags": [
           "Statistics"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
     "/api/stats/revenue": {
       "get": {
         "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -452,6 +421,11 @@
         },
         "tags": [
           "Statistics"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ]
       }
     },
