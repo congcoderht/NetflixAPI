@@ -19,18 +19,27 @@ class UserController {
         limitNumber = 10;
       }
 
-      const result = await UserService.getAllUsers({
+      const {rows, total, page: currentPage, limit: currentLimit} = await UserService.getAllUsers({
         search,
         page: pageNumber,
         limit: limitNumber,
         status,
       });
 
-      if(!result.success) {
-        return res.status(400).json(result);
-      }
+      const totalPages = Math.ceil(total / currentLimit);
 
-      res.status(200).json(result);
+      res.status(200).json({
+        success: true,
+        data: {
+          items: rows,
+          pagination: {
+            page: currentPage,
+            limit: currentLimit,
+            totalItems: total,
+            totalPages
+          }
+        }
+      });
     } catch (error) {
       next(error);
     }
@@ -129,7 +138,34 @@ class UserController {
   static async updateProfile(req, res, next) {
     try {
       const id = req.user.id;
-      const result = await UserService.updateProfile(id, req.body);
+      
+      const payload = {};
+
+      if (typeof req.body.full_name === "string") {
+        const fullName = req.body.full_name.trim();
+
+        if (fullName.length === 0) {
+          return res.status(400).json({
+            success: false,
+            message: "Full name không được để trống"
+          });
+        }
+
+        payload.full_name = fullName;
+      }
+
+      if (typeof req.body.avatar === "string") {
+        payload.avatar = req.body.avatar.trim();
+      }
+
+      if (Object.keys(payload).length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Không có dữ liệu để cập nhật"
+        });
+      }
+
+      const result = await UserService.updateProfile(id, payload);
 
       if(!result.success) {
         return res.status(400).json(result);

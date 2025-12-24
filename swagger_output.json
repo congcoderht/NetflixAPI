@@ -89,10 +89,6 @@
     {
       "name": "General",
       "description": "General endpoints"
-    },
-    {
-      "name": "Movies",
-      "description": "Movie management and listings"
     }
   ],
   "paths": {
@@ -132,7 +128,31 @@
         },
         "tags": [
           "Authentication"
-        ]
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "example": "any"
+                  },
+                  "username": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/auth/login": {
@@ -175,9 +195,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         },
         "tags": [
@@ -202,9 +219,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           }
         },
         "tags": [
@@ -271,9 +285,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -389,6 +400,24 @@
         "tags": [
           "Users"
         ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "full_name": {
+                    "example": "any"
+                  },
+                  "avatar": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        },
         "security": [
           {
             "bearerAuth": []
@@ -436,101 +465,6 @@
             "bearerAuth": []
           }
         ]
-      }
-    },
-    "/api/movies/": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "genreId",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "title",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "releaseYear",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "tags": [
-          "Movies"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/api/admin/auth/login": {
-      "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "tags": [
-          "Authentication"
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     }
   }

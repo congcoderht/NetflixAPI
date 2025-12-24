@@ -153,30 +153,20 @@ class UserRepository {
     return result;
   }
 
-  static async updateProfile(id, userData) {
-    const {full_name, avatar} = userData;
-
+  static async updateProfile(id, payload) {
     const fields = [];
-    const params = [];
+    const values = [];
 
-    if(full_name !== undefined) {
-      fields.push('full_name = ?');
-      params.push(full_name);
-    } 
+    Object.entries(payload).forEach(([key, value]) => {
+      fields.push(`${key} = ?`);
+      values.push(value);
+    });
 
-    if(avatar !== undefined) {
-      fields.push('avatar = ?');
-      params.push(avatar);
-    }
-
-    if(fields.length === 0){
-      throw new Error("Không có dữ liệu để cập nhật");
-    }
+    values.push(id);
 
     let query = `UPDATE [User] SET ${fields.join(', ')} WHERE user_id = ?`;
-    params.push(id);
 
-    await execute(query, params);
+    await execute(query, values);
     return this.findByIdPublic(id);
   }
 

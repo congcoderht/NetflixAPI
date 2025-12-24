@@ -13,7 +13,7 @@ router.put('/:id/status', authorize("admin"), UserController.updateStatus);
 
 
 // User routes
-router.put('/profile', authorize("user"), UserController.updateProfile);
+router.put('/profile', authorize("customer"), UserController.updateProfile);
 
 
 

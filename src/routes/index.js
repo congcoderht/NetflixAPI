@@ -4,7 +4,6 @@ const userRoutes = require('./userRoutes');
 const authRoutes = require('./authRoutes');
 const moviesRoutes = require('./moviesRoutes');
 
-const adminAuthRoutes = require('./admin/adminAuthRoutes');
 const adminStatsRoutes = require('./admin/adminStatsRoutes');
 
 // Định tuyến các routes
@@ -13,9 +12,6 @@ router.use('/users', userRoutes);
 router.use('/stats', adminStatsRoutes);
 router.use('/movies', moviesRoutes);
 
-
-// Định tuyến routes admin
-router.use('/admin/auth', adminAuthRoutes)
 
 // Route mặc định
 router.get('/', (req, res) => {
