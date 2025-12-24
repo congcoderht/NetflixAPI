@@ -9,10 +9,8 @@ class AuthService {
   /**
    * Đăng ký user mới
    */
-  static async register(userData) {
+  static async register(username, email, password, full_name) {
     try {
-      const { username, email, password } = userData;
-      const full_name = userData.full_name?.trim() || null;
 
       if (!username || !email || !password) {
         return { success: false, message: "Vui lòng điền đầy đủ thông tin!" };
@@ -121,7 +119,8 @@ class AuthService {
       // Tạo JWT token
       const token = generateToken({
         id: user.user_id,
-        email: user.email
+        email: user.email,
+        role: user.role.toLowerCase(),
       });
 
       // Loại bỏ password và role khỏi response
@@ -130,7 +129,9 @@ class AuthService {
         full_name: user.full_name,
         username: user.username,
         email: user.email,
-        avatar: user.avatar
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status
       };
 
       return {
@@ -151,7 +152,7 @@ class AuthService {
    */
   static async getCurrentUser(userId) {
     try {
-      const user = await UserRepository.findById(userId);
+      const user = await UserRepository.findByIdPublic(userId);
       
       if (!user) {
         throw new Error('Không tìm thấy user');
@@ -180,7 +181,7 @@ class AuthService {
         }
       }
 
-      const isPasswordValid = comparePassword(current_password, user.password);
+      const isPasswordValid = await comparePassword(current_password, user.password);
       if(!isPasswordValid){
         return {
           success: false,

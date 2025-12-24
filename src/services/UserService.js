@@ -31,19 +31,11 @@ class UserService {
         offset
       });
 
-      const totalPages = Math.ceil(total / limit);
-
       return {
-        success: true,
-        data: {
-          items: rows,
-          pagination: {
-            page,
-            limit,
-            totalItems: total,
-            totalPages
-          }
-        }
+        rows,
+        total,
+        page,
+        limit
       };
     } catch (error) {
       throw new Error(`Lỗi khi lấy danh sách users: ${error.message}`);
@@ -192,9 +184,9 @@ class UserService {
   }
 
   // cập nhật profile
-  static async updateProfile(id, userData) {
+  static async updateProfile(id, payload) {
     try {
-      const {full_name, avatar} = userData;
+
       const existingUser = await UserRepository.findById(id);
 
       if(!existingUser) {
@@ -211,27 +203,7 @@ class UserService {
         };
       }
 
-      if (full_name !== undefined) {
-        if (typeof full_name !== 'string') {
-          return {
-            success: false,
-            message: 'Họ tên không hợp lệ'
-          };
-        }
-
-         if (full_name.trim() === '') {
-          return {
-            success: false,
-            message: 'Họ tên không được để trống'
-          }
-        };
-      }
-
-      const updateData = {};
-      if (full_name !== undefined) updateData.full_name = full_name;
-      if (avatar !== undefined) updateData.avatar = avatar;
-
-      const updateUser = await UserRepository.updateProfile(id, updateData);
+      const updateUser = await UserRepository.updateProfile(id, payload);
 
       if(!updateUser) {
         throw new Error("Không thể cập nhật User");
