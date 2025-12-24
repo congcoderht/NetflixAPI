@@ -9,10 +9,10 @@ router.use(authenticate); // Tất cả routes trong file này yêu cầu JWT
 
 
 // Xem danh sach phim (Phan trang)
-
 router.get('/',authorize("user","admin"), MovieController.getMovies);
 
-
+// Xem chi tiết phim theo ID
+router.get('/:id', authorize("user","admin"), MovieController.getMovieDetail);
 
 
 module.exports = router;

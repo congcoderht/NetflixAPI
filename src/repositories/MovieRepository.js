@@ -79,7 +79,6 @@ class MovieRepository {
         return result.recordset;
     }
 
-    // Lấy danh sách phim
     // tổng số phim (có filter)
     static async findTotal({ genreId, title, releaseYear }) {
     let where = `WHERE 1 = 1`;
@@ -117,8 +116,6 @@ class MovieRepository {
     return result.recordset[0].total;
     }
 
-
-
     // lấy danh sách phim + rating + genres + phân trang
     static async findAll({ page, limit, genreId, title, releaseYear }) {
 
@@ -139,7 +136,6 @@ class MovieRepository {
         params.push(Number(releaseYear));
     }
 
-    // ✅ FIX Ở ĐÂY
     if (genreId && !isNaN(genreId)) {
         where += `
             AND EXISTS (
@@ -188,8 +184,56 @@ class MovieRepository {
     return result.recordset;
     }
 
+    static async GetDetails(movieId) {
+        let query = `
+            SELECT
+                m.movie_id,
+                m.title,
+                m.description,
+                m.release_year,
+                m.poster_url,
+                m.trailer_url,
+                m.url_phim,
+                ISNULL(r.avg_rating, 0) AS avg_rating,
+                ISNULL(genre_list.genres, '') AS genres
+            FROM Movie m
+            LEFT JOIN (
+                SELECT 
+                    movie_id,
+                    ROUND(AVG(CAST(number AS FLOAT)), 1) AS avg_rating
+                FROM User_Rating
+                GROUP BY movie_id
+            ) r ON m.movie_id = r.movie_id
 
-  
+            LEFT JOIN (
+                SELECT 
+                    gf.movie_id,
+                    STRING_AGG(gen.name, ', ') AS genres
+                FROM Genres_Film gf
+                JOIN Genres gen ON gf.genres_id = gen.genres_id
+                GROUP BY gf.movie_id
+            ) genre_list ON m.movie_id = genre_list.movie_id
+
+            WHERE m.movie_id = ?
+        `;
+        const result = await execute(query, [movieId]);
+        return result.recordset[0];
+    }
+
+    static async getActorsByMovieId(movieId) {
+        let query = `
+            SELECT
+                cm.member_id,
+                cm.name,
+                a.role
+            FROM Attend a
+            JOIN CastMember cm ON a.member_id = cm.member_id
+            WHERE a.movie_id = ?
+            ORDER BY a.role
+        `;
+        const result = await execute(query, [movieId]);
+        return result.recordset || [];
+    }
 }
 
 module.exports = MovieRepository;
