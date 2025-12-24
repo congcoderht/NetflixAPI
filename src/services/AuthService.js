@@ -44,7 +44,7 @@ class AuthService {
         email: email.trim().toLowerCase(),
         password: hashedPassword,
         full_name: full_name,
-        role: "customer",
+        role: "USER",
       });
 
       const token = generateToken({
