@@ -234,6 +234,38 @@ class MovieRepository {
         const result = await execute(query, [movieId]);
         return result.recordset || [];
     }
+
+    static async upsertRating(userId, movieId, number) {
+        // Insert or update user's rating for a movie
+        const upsertQuery = `
+            IF EXISTS (SELECT 1 FROM User_Rating WHERE user_id = ? AND movie_id = ?)
+                UPDATE User_Rating SET number = ? WHERE user_id = ? AND movie_id = ?;
+            ELSE
+                INSERT INTO User_Rating (user_id, movie_id, number) VALUES (?, ?, ?);
+        `;
+        await execute(upsertQuery, [userId, movieId, number, userId, movieId, userId, movieId, number]);
+
+        const avgQuery = `
+            SELECT ROUND(AVG(CAST(number AS FLOAT)), 1) AS avg_rating,
+                   COUNT(*) AS rating_count
+            FROM User_Rating
+            WHERE movie_id = ?
+        `;
+        const avgResult = await execute(avgQuery, [movieId]);
+
+        const userQuery = `
+            SELECT number AS user_rating
+            FROM User_Rating
+            WHERE user_id = ? AND movie_id = ?
+        `;
+        const userResult = await execute(userQuery, [userId, movieId]);
+
+        return {
+            avgRating: avgResult.recordset[0] ? avgResult.recordset[0].avg_rating : 0,
+            ratingCount: avgResult.recordset[0] ? avgResult.recordset[0].rating_count : 0,
+            userRating: userResult.recordset[0] ? userResult.recordset[0].user_rating : null
+        };
+    }
 }
 
 module.exports = MovieRepository;

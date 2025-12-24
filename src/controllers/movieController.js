@@ -64,6 +64,29 @@ class MovieController {
             });
         }
     }
+
+    static async rateMovie(req, res) {
+        try {
+            const { id } = req.params;
+            const movieId = Number(id);
+            const { number } = req.body;
+            const userId = req.user && req.user.id;
+
+            if (!movieId || movieId <= 0) {
+                return res.status(400).json({ success: false, message: 'Invalid movie ID' });
+            }
+
+            if (!userId) {
+                return res.status(401).json({ success: false, message: 'Unauthenticated' });
+            }
+
+            const result = await MovieService.rateMovie(userId, movieId, number);
+
+            res.json({ success: true, data: result });
+        } catch (error) {
+            res.status(400).json({ success: false, message: error.message });
+        }
+    }
 }
 
 module.exports = MovieController;

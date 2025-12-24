@@ -14,6 +14,9 @@ router.get('/',authorize("user","admin"), MovieController.getMovies);
 // Xem chi tiết phim theo ID
 router.get('/:id', authorize("user","admin"), MovieController.getMovieDetail);
 
+// Đánh giá phim (tạo hoặc cập nhật đánh giá của user hiện tại)
+router.put('/:id/rating', authorize("user","admin"), MovieController.rateMovie);
+
 
 module.exports = router;
 

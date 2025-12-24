@@ -65,6 +65,27 @@ class MovieService {
             }))
         };
     }
+
+    static async rateMovie(userId, movieId, number) {
+        // validate inputs
+        if (!userId || !movieId) {
+            throw new Error('Invalid user or movie id');
+        }
+
+        const n = Number(number);
+        if (!Number.isInteger(n) || n < 1 || n > 10) {
+            throw new Error('Rating must be an integer between 1 and 10');
+        }
+
+        const result = await MovieRepository.upsertRating(userId, movieId, n);
+
+        return {
+            movieId,
+            userRating: result.userRating,
+            avgRating: result.avgRating,
+            ratingCount: result.ratingCount
+        };
+    }
 }
 
 module.exports = MovieService;
