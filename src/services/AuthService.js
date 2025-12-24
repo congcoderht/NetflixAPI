@@ -121,7 +121,8 @@ class AuthService {
       // Tạo JWT token
       const token = generateToken({
         id: user.user_id,
-        email: user.email
+        email: user.email,
+        role: user.role.toLowerCase()
       });
 
       // Loại bỏ password và role khỏi response

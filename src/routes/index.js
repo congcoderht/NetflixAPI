@@ -11,7 +11,7 @@ const adminStatsRoutes = require('./admin/adminStatsRoutes');
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/stats', adminStatsRoutes);
-//router.use('/movies', moviesRoutes);
+router.use('/movies', moviesRoutes);
 
 
 // Định tuyến routes admin

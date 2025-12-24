@@ -78,6 +78,118 @@ class MovieRepository {
         const result = await execute(query);
         return result.recordset;
     }
+
+    // Lấy danh sách phim
+    // tổng số phim (có filter)
+    static async findTotal({ genreId, title, releaseYear }) {
+    let where = `WHERE 1 = 1`;
+    const params = [];
+
+    if (title && title.trim() !== "") {
+        where += ` AND m.title LIKE ?`;
+        params.push(`%${title.trim()}%`);
+    }
+
+    if (releaseYear && !isNaN(releaseYear)) {
+        where += ` AND m.release_year = ?`;
+        params.push(Number(releaseYear));
+    }
+
+    if (genreId && !isNaN(genreId)) {
+        where += `
+            AND EXISTS (
+                SELECT 1
+                FROM Genres_Film gf
+                WHERE gf.movie_id = m.movie_id
+                AND gf.genres_id = ?
+            )
+        `;
+        params.push(Number(genreId));
+    }
+
+    const query = `
+        SELECT COUNT(*) AS total
+        FROM Movie m
+        ${where}
+    `;
+
+    const result = await execute(query, params);
+    return result.recordset[0].total;
+    }
+
+
+
+    // lấy danh sách phim + rating + genres + phân trang
+    static async findAll({ page, limit, genreId, title, releaseYear }) {
+
+    const safePage = Number(page) > 0 ? Number(page) : 1;
+    const safeLimit = Number(limit) > 0 ? Number(limit) : 10;
+    const offset = (safePage - 1) * safeLimit;
+
+    let where = `WHERE 1 = 1`;
+    const params = [];
+
+    if (title && title.trim() !== "") {
+        where += ` AND m.title LIKE ?`;
+        params.push(`%${title.trim()}%`);
+    }
+
+    if (releaseYear && !isNaN(releaseYear)) {
+        where += ` AND m.release_year = ?`;
+        params.push(Number(releaseYear));
+    }
+
+    // ✅ FIX Ở ĐÂY
+    if (genreId && !isNaN(genreId)) {
+        where += `
+            AND EXISTS (
+                SELECT 1
+                FROM Genres_Film gf
+                WHERE gf.movie_id = m.movie_id
+                AND gf.genres_id = ?
+            )
+        `;
+        params.push(Number(genreId));
+    }
+
+    const query = `
+        SELECT
+            m.movie_id,
+            m.title,
+            m.description,
+            m.release_year,
+            ISNULL(r.avg_rating, 0) AS avg_rating,
+            ISNULL(genre_list.genres, '') AS genres
+        FROM Movie m
+
+        LEFT JOIN (
+            SELECT 
+                movie_id,
+                ROUND(AVG(CAST(number AS FLOAT)), 1) AS avg_rating
+            FROM User_Rating
+            GROUP BY movie_id
+        ) r ON m.movie_id = r.movie_id
+
+        LEFT JOIN (
+            SELECT 
+                gf.movie_id,
+                STRING_AGG(gen.name, ', ') AS genres
+            FROM Genres_Film gf
+            JOIN Genres gen ON gf.genres_id = gen.genres_id
+            GROUP BY gf.movie_id
+        ) genre_list ON m.movie_id = genre_list.movie_id
+
+        ${where}
+        ORDER BY m.movie_id DESC
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+    `;
+
+    const result = await execute(query, [...params, offset, safeLimit]);
+    return result.recordset;
+    }
+
+
+  
 }
 
 module.exports = MovieRepository;

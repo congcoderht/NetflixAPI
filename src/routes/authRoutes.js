@@ -10,8 +10,8 @@ router.post('/login', AuthController.login);
 // Protected routes (cần authentication)
 router.use(authenticate);
 
-router.get('/me', AuthController.getMe);
-router.put('/change-pass', AuthController.changePassword);
+router.get('/me', authorize("user"), AuthController.getMe);
+router.put('/change-pass', authorize("user"), AuthController.changePassword);
 
 
 module.exports = router;
