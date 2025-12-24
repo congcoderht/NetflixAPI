@@ -89,8 +89,15 @@ const convertToOAS31 = (spec) => {
       if (Array.isArray(op.parameters)) {
         for (const p of op.parameters) {
           if (p.in === 'body') {
-            requestBody = requestBody || { content: { 'application/json': { schema: p.schema || { type: 'object' } } } };
-          } else {
+          requestBody = requestBody || {
+            required: p.required === true,
+            content: {
+              'application/json': {
+                schema: p.schema || { type: 'object' }
+              }
+            }
+          };
+        } else {
             // If the parameter is the Authorization header, skip it and mark for security
             if (p.in === 'header' && typeof p.name === 'string' && p.name.toLowerCase() === 'authorization') {
               hasAuthHeader = true;
@@ -119,7 +126,17 @@ const convertToOAS31 = (spec) => {
         newOp.security = [{ bearerAuth: [] }];
       }
 
-      newOp.responses = newOp.responses || { '200': { description: 'OK' } };
+      newOp.responses = newOp.responses || {
+      '200': {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: { type: 'object' }
+          }
+        }
+      }
+    };
+
 
       oas.paths[pathKey][method] = newOp;
     }

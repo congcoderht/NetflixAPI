@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userRoutes = require('./userRoutes');
 const authRoutes = require('./authRoutes');
+const moviesRoutes = require('./moviesRoutes');
 
 const adminAuthRoutes = require('./admin/adminAuthRoutes');
 const adminStatsRoutes = require('./admin/adminStatsRoutes');
@@ -10,6 +11,7 @@ const adminStatsRoutes = require('./admin/adminStatsRoutes');
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/stats', adminStatsRoutes);
+//router.use('/movies', moviesRoutes);
 
 
 // Định tuyến routes admin

@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController');
-const { authenticate } = require('../middleware/auth');
-const verifyAdmin = require('../middleware/admin/verifyAdmin');
+const { authenticate,authorize } = require('../middleware/auth');
+const { route } = require('./userRoutes');
 
 router.use(authenticate); // Tất cả routes trong file này yêu cầu JWT
 
-router.get('/', verifyAdmin, UserController.getAllUsers);
-router.get('/:id', verifyAdmin, UserController.getDetailedUserById);
-// router.post('/', UserController.createUser);
-router.put('/profile', UserController.updateProfile);
-// router.put('/:id', UserController.updateUser);
-// router.delete('/:id', UserController.deleteUser);
+// Admin routes
+router.get('/', authorize("admin"), UserController.getAllUsers);
+router.get('/:id', authorize("admin"), UserController.getDetailedUserById);
+router.put('/:id/status', authorize("admin"), UserController.updateStatus);
 
-router.put('/:id/status', verifyAdmin, UserController.updateStatus);
+
+// User routes
+router.put('/profile', authorize("user"), UserController.updateProfile);
+
+
 
 module.exports = router;
 
