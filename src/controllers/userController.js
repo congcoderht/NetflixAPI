@@ -35,7 +35,7 @@ class UserController {
           pagination: {
             page: currentPage,
             limit: currentLimit,
-            totalItems: total,
+            total: total,
             totalPages
           }
         }

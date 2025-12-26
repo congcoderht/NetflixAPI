@@ -3,7 +3,7 @@ const {execute} = require('../config/database');
 class MovieRepository {
 
     // tổng số phim trên hệ thống
-    static async findTotal() {
+    static async countTotal() {
         let query = `
             SELECT COUNT(movie_id) AS total
             FROM Movie

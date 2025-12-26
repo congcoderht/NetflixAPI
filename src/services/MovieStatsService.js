@@ -5,7 +5,7 @@ class MovieStatsService {
 
     static async getTotal() {
         try {
-            const result = MovieRepository.findTotal();
+            const result = MovieRepository.countTotal();
 
             return result;
         }catch(error) {
