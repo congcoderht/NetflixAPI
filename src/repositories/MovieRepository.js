@@ -266,6 +266,18 @@ class MovieRepository {
             userRating: userResult.recordset[0] ? userResult.recordset[0].user_rating : null
         };
     }
+
+    static async findAllGenres() {
+        const query = `
+            SELECT
+                genres_id AS id,
+                name
+            FROM Genres
+            ORDER BY name
+        `;
+        const result = await execute(query);
+        return result.recordset || [];
+    }
 }
 
 module.exports = MovieRepository;

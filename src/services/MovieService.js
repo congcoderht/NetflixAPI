@@ -86,6 +86,11 @@ class MovieService {
             ratingCount: result.ratingCount
         };
     }
+
+    static async getAllGenres() {
+        const genres = await MovieRepository.findAllGenres();
+        return (genres || []).map(g => ({ id: g.id, name: g.name }));
+    }
 }
 
 module.exports = MovieService;

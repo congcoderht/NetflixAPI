@@ -87,6 +87,15 @@ class MovieController {
             res.status(400).json({ success: false, message: error.message });
         }
     }
+
+    static async getGenres(req, res) {
+        try {
+            const data = await MovieService.getAllGenres();
+            res.json({ success: true, data });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
 }
 
 module.exports = MovieController;

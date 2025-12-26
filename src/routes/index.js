@@ -11,6 +11,7 @@ router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/stats', adminStatsRoutes);
 router.use('/movies', moviesRoutes);
+// genres route served under /api/movies/genres via MovieController
 
 
 // Route mặc định
