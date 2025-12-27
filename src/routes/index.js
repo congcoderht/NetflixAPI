@@ -3,6 +3,7 @@ const router = express.Router();
 const userRoutes = require('./userRoutes');
 const authRoutes = require('./authRoutes');
 const moviesRoutes = require('./moviesRoutes');
+const watchlistRoutes = require('./watchlistRoutes');
 
 const adminStatsRoutes = require('./admin/adminStatsRoutes');
 
@@ -11,6 +12,7 @@ router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/stats', adminStatsRoutes);
 router.use('/movies', moviesRoutes);
+router.use('/watchlist', watchlistRoutes);
 // genres route served under /api/movies/genres via MovieController
 
 
