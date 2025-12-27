@@ -32,6 +32,41 @@ class WatchListController {
             next(error);
         }
     }
+    
+    static async deleteMovie(req, res, next) {
+        try {
+            const movieId = Number(req.params.id);
+            const userId = req.user.id;
+
+            const result = await WatchListService.deleteMovie({userId, movieId});
+
+            if(!result.success) {
+                return res.status(400).json(result);
+            }
+
+            res.status(200).json(result);
+        }catch(error) {
+            next(error);
+        }
+    }
+
+    static async addMovie(req, res, next) {
+        try {
+            const movieId = Number(req.params.id);
+
+            const userId = req.user.id;
+
+            const result = await WatchListService.addMovie({userId, movieId});
+
+            if(!result.success) {
+                return res.status(400).json(result);
+            }
+
+            res.status(200).json(result);
+        }catch(error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = WatchListController;

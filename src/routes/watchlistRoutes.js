@@ -5,8 +5,13 @@ const { authenticate } = require('../middleware/auth');
 
 router.use(authenticate);
 
+// lấy danh sách yêu thích
 router.get('/', WatchListController.getByUserId);
-// Router.delete('/:id', WatchListController.deleteMovie);
-// Router.post('/:id', WatchListController.addMovie);
+
+// xóa phim khỏi danh sách yêu thích
+router.delete('/:id', WatchListController.deleteMovie);
+
+// thêm phim vào danh sách yêu thích
+router.post('/:id', WatchListController.addMovie);
 
 module.exports = router;
