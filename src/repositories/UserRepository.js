@@ -24,7 +24,7 @@ class UserRepository {
     }
 
     const dataQuery = `
-      SELECT user_id, username, full_name, email, role, avatar, status
+      SELECT user_id, username, full_name, email, role, avatar, status, created_at, gender, phone_number, birthday
       FROM [User]
       ${where}
       ORDER BY user_id DESC
