@@ -10,7 +10,7 @@ router.post('/login', AuthController.login);
 // Protected routes (cần authentication)
 router.use(authenticate);
 
-router.get('/me', authorize("user"), AuthController.getMe);
+router.get('/me', authorize("user", "admin"), AuthController.getMe);
 router.put('/change-pass', authorize("user"), AuthController.changePassword);
 
 
