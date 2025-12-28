@@ -85,6 +85,18 @@ class DiscountController {
             next(error);
         }
     }
+
+    static async getAvailableForUser(req, res, next) {
+        try {
+            const userId = req.user && req.user.id;
+            if (!userId) return res.status(401).json({ success: false, message: 'Unauthenticated' });
+
+            const discounts = await DiscountService.getAvailableForUser(userId);
+            return res.status(200).json({ success: true, data: discounts });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = DiscountController;

@@ -118,6 +118,29 @@ class DiscountRepository {
         }
     }
 
+    // Lấy danh sách mã giảm giá mà user chưa sử dụng và còn hiệu lực
+    static async findAvailableForUser(userId) {
+        const query = `
+            SELECT
+                d.discount_id,
+                d.code,
+                d.discount_type,
+                d.value,
+                d.min_order_value,
+                d.max_discount,
+                d.end_date
+            FROM Discounts d
+            LEFT JOIN Orders o ON o.discount_id = d.discount_id AND o.user_id = ?
+            WHERE o.order_id IS NULL
+              AND (d.end_date IS NULL OR d.end_date >= GETDATE())
+              AND (d.start_date IS NULL OR d.start_date <= GETDATE())
+            ORDER BY d.end_date ASC
+        `;
+
+        const result = await execute(query, [userId]);
+        return result.recordset || [];
+    }
+
 
     static async existDiscount(code) {
         let query = `
