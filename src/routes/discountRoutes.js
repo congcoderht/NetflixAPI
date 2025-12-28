@@ -5,10 +5,14 @@ const DiscountController = require('../controllers/discountController');
 
 router.use(authenticate);
 
+// lấy danh sách mã giảm giá
+router.get('/', authorize("admin"), DiscountController.getAll);
+
 // tạo mã giảm giá
-router.post('/', DiscountController.create);
+router.post('/', authorize("admin"), DiscountController.create);
 
 // chỉnh sửa mã giảm giá
-router.put('/:id', DiscountController.update);
+router.put('/:id', authorize("admin"), DiscountController.update);
+
 
 module.exports = router;
