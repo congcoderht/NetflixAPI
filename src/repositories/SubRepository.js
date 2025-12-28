@@ -27,6 +27,21 @@ class SubRepository {
         const result = await execute(query, [userId]);
         return result.recordset[0];
     }
+
+    static async findAllPlans() {
+        const query = `
+            SELECT
+                plan_id AS planId,
+                name,
+                price,
+                durations,
+                description
+            FROM Subscription_plans
+            ORDER BY price ASC
+        `;
+        const result = await execute(query);
+        return result.recordset || [];
+    }
 }
 
 module.exports = SubRepository;

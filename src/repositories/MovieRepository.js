@@ -123,7 +123,7 @@ class MovieRepository {
     const safeLimit = Number(limit) > 0 ? Number(limit) : 10;
     const offset = (safePage - 1) * safeLimit;
 
-    let where = `WHERE m.is_deleted = '0'`;
+    let where = `WHERE 1 = 1`;
     const params = [];
     
     if (title && title.trim() !== "") {

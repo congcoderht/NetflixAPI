@@ -57,6 +57,7 @@ const getTagForPath = (pathKey) => {
   if (pathKey.includes('/orders')) return 'Orders';
   if (pathKey.includes('/watchlist')) return 'WatchList';
   if (pathKey.includes('/promos')) return 'Discounts';
+  if (pathKey.includes('/subscriptions')) return 'Subscriptions';
   return 'General';
 };
 
@@ -78,6 +79,7 @@ const convertToOAS31 = (spec) => {
     { name: 'Movies', description: 'Movie management and listings' },
     { name: 'WatchList', description: 'mange user favorite movies' },
     { name: 'Discounts', description: 'Discount management and listing' },
+    { name: 'Subscriptions', description: 'Subscription plans and management' },
   ];
   
   oas.paths = {};
