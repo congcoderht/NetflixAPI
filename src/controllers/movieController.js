@@ -96,6 +96,86 @@ class MovieController {
             res.status(500).json({ success: false, message: error.message });
         }
     }
+
+    // Create a new genre
+    static async createGenre(req, res) {
+        try {
+            const { name } = req.body;
+            const result = await MovieService.createGenre(name);
+            res.status(201).json({ success: true, data: result });
+        } catch (error) {
+            res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
+    // Create a new cast member
+    static async createCastMember(req, res) {
+        try {
+            const { name, birthday } = req.body;
+            const result = await MovieService.createCastMember(name, birthday);
+            res.status(201).json({ success: true, data: result });
+        } catch (error) {
+            res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
+    // Get all cast members
+    static async getAllCastMembers(req, res) {
+        try {
+            const data = await MovieService.getAllCastMembers();
+            res.json({ success: true, data });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    }
+
+    static async createMovie(req, res) {
+        try {
+            const payload = req.body;
+            const result = await MovieService.createMovie(payload);
+            res.status(201).json({ success: true, data: result });
+        } catch (error) {
+            res.status(400).json({ success: false, message: error.message });
+        }
+    }
+
+    static async updateMovie(req, res) {
+        try {
+            const { id } = req.params;
+            const movieId = Number(id);
+            const payload = req.body;
+
+            if (!movieId || movieId <= 0) {
+                return res.status(400).json({ success: false, message: 'Invalid movie ID' });
+            }
+
+            const result = await MovieService.updateMovie(movieId, payload);
+            res.json({ success: true, data: result });
+        } catch (error) {
+            res.status(400).json({ success: false, message: error.message });
+        }
+    }
+    
+    static async toggleDeleteMovie(req, res, next) {
+    try {
+        const id = Number(req.params.id);
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID không hợp lệ'
+            });
+        }
+
+        const result = await MovieService.toggleDeleteMovie(id);
+        res.status(result.success ? 200 : 404).json(result);
+
+    } catch (error) {
+        next(error);
+    }
+    }
+
+   
 }
 
 module.exports = MovieController;

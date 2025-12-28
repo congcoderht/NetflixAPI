@@ -19,7 +19,7 @@ router.use('/watchlist', watchlistRoutes);
 router.use('/orders', orderRoutes);
 router.use('/promos', promosRoutes);
 router.use('/subscriptions', subRoutes);
-// genres route served under /api/movies/genres via MovieController
+
 
 
 // Route mặc định
@@ -27,12 +27,7 @@ router.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'Welcome to Netflix API',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      users: '/api/users',
-      swagger: '/api-docs'
-    }
+    version: '1.0.0'
   });
 });
 
