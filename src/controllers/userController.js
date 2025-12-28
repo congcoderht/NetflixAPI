@@ -1,7 +1,5 @@
 const UserService = require('../services/UserService');
 
-
-
 class UserController {
  
   static async getAllUsers(req, res, next) {
@@ -87,7 +85,7 @@ class UserController {
         return res.status(400).json(result);
       }
 
-      res.json(result);
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -157,6 +155,26 @@ class UserController {
       if (typeof req.body.avatar === "string") {
         payload.avatar = req.body.avatar.trim();
       }
+
+      if(typeof req.body.gender === "string") {
+        payload.gender = req.body.gender.trim();
+      }
+
+      if(typeof req.body.phone_number === "string") {
+        payload.phone_number = req.body.phone_number.trim();
+      }
+
+      const birthday = req.body.birthday;
+
+      
+      if (birthday && !/^\d{4}-\d{2}-\d{2}$/.test(birthday)) {
+        return res.status(400).json({
+          success: false,
+          message: "Birthday phải có dạng YYYY-MM-DD"
+        });
+      }
+
+      payload.birthday = birthday;
 
       if (Object.keys(payload).length === 0) {
         return res.status(400).json({

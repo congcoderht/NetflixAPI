@@ -1,4 +1,5 @@
 const AuthService = require('../services/AuthService');
+const UserSubService = require('../services/UserSubService');
 
 
 class AuthController {
@@ -54,13 +55,20 @@ class AuthController {
   static async getMe(req, res, next) {
     try {
       const userId = req.user.id;
-      const result = await AuthService.getCurrentUser(userId);
-      res.json(result);
+      const user = await AuthService.getCurrentUser(userId);
+      const current_plan = await UserSubService.getCurrentSub(userId);
+
+      res.status(200).json({
+        success: true,
+        data: {
+          user,
+          current_plan: current_plan
+        }
+      })
     } catch (error) {
       next(error);
     }
   }
-
   
   static async changePassword(req, res, next) {
     try {

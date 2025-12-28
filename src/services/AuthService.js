@@ -1,6 +1,7 @@
 const UserRepository = require('../repositories/UserRepository');
 const { comparePassword, hashPassword } = require('../utils/password');
 const { generateToken } = require('../utils/jwt');
+const SubRepository = require('../repositories/SubRepository');
 
 /**
  * Service Layer - Authentication Logic
@@ -158,10 +159,8 @@ class AuthService {
         throw new Error('Không tìm thấy user');
       }
 
-      return {
-        success: true,
-        data: user
-      };
+      return user;
+
     } catch (error) {
       throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);
     }

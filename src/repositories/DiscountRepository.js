@@ -1,0 +1,113 @@
+const {execute} = require('../config/database');
+
+class DiscountRepository {
+
+    static async create({code, discount_type, value, start_date, end_date, max_discount, min_order_value}) {
+        const fields = ['code', 'discount_type', 'value', 'start_date', 'end_date'];
+        const values = [code, discount_type, value, start_date, end_date];
+
+        if (min_order_value != null) {
+            fields.push('min_order_value');
+            values.push(min_order_value);
+        }
+
+        if (max_discount != null) {
+            fields.push('max_discount');
+            values.push(max_discount);
+        }
+
+        const placeholders = fields.map(() => '?').join(', ');
+
+        const query = `
+            INSERT INTO Discounts (${fields.join(', ')})
+            VALUES (${placeholders})
+        `;
+
+        await execute(query, values);
+    }
+
+   static async update({
+        id,
+        discount_type,
+        value,
+        start_date,
+        end_date,
+        max_discount,
+        min_order_value
+    }) {
+
+        const fields = [];
+        const values = [];
+
+        if (discount_type !== undefined) {
+            fields.push('discount_type = ?');
+            values.push(discount_type);
+        }
+
+        if (value !== undefined) {
+            fields.push('value = ?');
+            values.push(value);
+        }
+
+        if (start_date !== undefined) {
+            fields.push('start_date = ?');
+            values.push(start_date);
+        }
+
+        if (end_date !== undefined) {
+            fields.push('end_date = ?');
+            values.push(end_date);
+        }
+
+        if (max_discount !== undefined) {
+            fields.push('max_discount = ?');
+            values.push(max_discount);
+        }
+
+        if (min_order_value !== undefined) {
+            fields.push('min_order_value = ?');
+            values.push(min_order_value);
+        }
+
+        const query = `
+            UPDATE Discounts
+            SET ${fields.join(', ')}
+            WHERE discount_id = ?
+        `;
+
+        values.push(id);
+
+        const result = await execute(query, values);
+
+        if (result.rowsAffected[0] === 0) {
+            throw new Error('Discount không tồn tại');
+        }
+
+        return true;
+    }
+
+
+    static async existDiscount(code) {
+        let query = `
+            SELECT TOP 1 1
+            FROM Discounts
+            WHERE code = ?
+        `;
+
+        const result = await execute(query, [code]);
+        return result.recordset.length > 0;
+    }
+
+    static async existDiscountId(id) {
+        let query = `
+            SELECT TOP 1 1
+            FROM Discounts
+            WHERE discount_id = ?
+        `;
+
+        const result = await execute(query, [id]);
+        return result.recordset.length > 0;
+    }
+}
+
+module.exports = DiscountRepository;
