@@ -54,6 +54,9 @@ const getTagForPath = (pathKey) => {
   if (pathKey.includes('/stats')) return 'Statistics';
   if (pathKey.includes('/users')) return 'Users';
   if (pathKey.includes('/movies')) return 'Movies';
+  if (pathKey.includes('/orders')) return 'Orders';
+  if (pathKey.includes('/watchlist')) return 'WatchList';
+  if (pathKey.includes('/promos')) return 'Discounts';
   return 'General';
 };
 
@@ -72,8 +75,9 @@ const convertToOAS31 = (spec) => {
     { name: 'Admin', description: 'Admin operations' },
     { name: 'Statistics', description: 'Analytics and statistics' },
     { name: 'General', description: 'General endpoints' },
-    { name: 'Movies', description: 'Movie management and listings' }
-
+    { name: 'Movies', description: 'Movie management and listings' },
+    { name: 'WatchList', description: 'mange user favorite movies' },
+    { name: 'Discounts', description: 'Discount management and listing' },
   ];
   
   oas.paths = {};

@@ -5,6 +5,7 @@ const authRoutes = require('./authRoutes');
 const moviesRoutes = require('./moviesRoutes');
 const watchlistRoutes = require('./watchlistRoutes');
 const orderRoutes = require('./orderRoutes');
+const promosRoutes = require('./discountRoutes');
 
 const adminStatsRoutes = require('./admin/adminStatsRoutes');
 
@@ -15,6 +16,7 @@ router.use('/stats', adminStatsRoutes);
 router.use('/movies', moviesRoutes);
 router.use('/watchlist', watchlistRoutes);
 router.use('/orders', orderRoutes);
+router.use('/promos', promosRoutes);
 // genres route served under /api/movies/genres via MovieController
 
 

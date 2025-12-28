@@ -93,6 +93,14 @@
     {
       "name": "Movies",
       "description": "Movie management and listings"
+    },
+    {
+      "name": "WatchList",
+      "description": "mange user favorite movies"
+    },
+    {
+      "name": "Discounts",
+      "description": "Discount management and listing"
     }
   ],
   "paths": {
@@ -700,7 +708,7 @@
           }
         },
         "tags": [
-          "General"
+          "WatchList"
         ],
         "security": [
           {
@@ -734,7 +742,7 @@
           }
         },
         "tags": [
-          "General"
+          "WatchList"
         ],
         "security": [
           {
@@ -766,7 +774,7 @@
           }
         },
         "tags": [
-          "General"
+          "WatchList"
         ],
         "security": [
           {
@@ -787,7 +795,7 @@
           }
         },
         "tags": [
-          "General"
+          "Orders"
         ],
         "security": [
           {
@@ -848,7 +856,7 @@
           }
         },
         "tags": [
-          "General"
+          "Orders"
         ],
         "security": [
           {
@@ -858,7 +866,7 @@
       }
     },
     "/api/orders/{id}/status": {
-      "get": {
+      "put": {
         "description": "",
         "parameters": [
           {
@@ -885,8 +893,141 @@
           }
         },
         "tags": [
-          "General"
+          "Orders"
         ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/promos/": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "Discounts"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "example": "any"
+                  },
+                  "discount_type": {
+                    "example": "any"
+                  },
+                  "value": {
+                    "example": "any"
+                  },
+                  "min_order_value": {
+                    "example": "any"
+                  },
+                  "max_discount": {
+                    "example": "any"
+                  },
+                  "start_date": {
+                    "example": "any"
+                  },
+                  "end_date": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/promos/{id}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "Discounts"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "discount_type": {
+                    "example": "any"
+                  },
+                  "value": {
+                    "example": "any"
+                  },
+                  "min_order_value": {
+                    "example": "any"
+                  },
+                  "max_discount": {
+                    "example": "any"
+                  },
+                  "start_date": {
+                    "example": "any"
+                  },
+                  "end_date": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        },
         "security": [
           {
             "bearerAuth": []

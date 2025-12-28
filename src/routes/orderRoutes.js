@@ -12,6 +12,6 @@ router.get('/my', OrderController.getOrderHistory);
 router.get('/all', authorize("admin"), OrderController.getAll);
 
 // cập nhật trạng thái đơn hàng
-router.get('/:id/status', authorize("admin"), OrderController.updateStatus);
+router.put('/:id/status', authorize("admin"), OrderController.updateStatus);
 
 module.exports = router;

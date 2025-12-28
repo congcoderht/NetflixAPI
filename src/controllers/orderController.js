@@ -59,8 +59,10 @@ class OrderController {
 
     static async updateStatus(req, res, next) {
         try {
-            const status = req.body;
+            const status = req.body.status;
             const orderId = req.params.id;
+
+            console.log("check order_id: ", orderId);
 
             const result = await OrderService.updateStatus({orderId, status});
 

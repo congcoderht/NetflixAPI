@@ -96,6 +96,15 @@ class OrderRepository {
         }
     }
 
+    // cập nhật trạng thái đơn hàng
+    static async updateStatus({orderId, status}) {
+        let query = `
+            UPDATE Orders SET status = ? WHERE order_id = ?
+        `;
+
+        await execute(query, [status, orderId]);
+    }
+
     // kiểm tra xem order_id có tồn tại hay không
     static async existOrder({orderId}) {
         let query = `
@@ -103,9 +112,9 @@ class OrderRepository {
             FROM Orders
             WHERE order_id = ?
         `;
-        
+
         const result = await execute(query, [orderId]);
-        return result.length > 0;
+        return result.recordset.length > 0;
     }
 
     // lấy doanh thu theo ngày trong tháng hiện tại

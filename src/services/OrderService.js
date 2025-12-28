@@ -49,7 +49,7 @@ class OrderService {
 
     static async updateStatus({orderId, status}) {
         try{
-            const existingOrder = await OrderRepository.existOrder(orderId);
+            const existingOrder = await OrderRepository.existOrder({orderId});
 
             if(!existingOrder) {
                 return {
@@ -58,7 +58,19 @@ class OrderService {
                 }
             }
 
-            // if(status )
+            if (!['PAID', 'PENDING', 'FAILED'].includes(status)) {
+                return {
+                    success: false,
+                    message: "Trạng thái phải là PAID | PENDING | FAILED"
+                }
+            }
+
+            await OrderRepository.updateStatus({orderId, status});
+
+            return {
+                success: true,
+                message: "Cập nhật trạng thái thành công"
+            }
         }catch(error) {
             throw new Error(`Lỗi khi lấy tất cả đơn hàng: ${error}`)
         }
