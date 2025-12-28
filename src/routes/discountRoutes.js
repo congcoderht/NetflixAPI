@@ -10,7 +10,7 @@ router.use(authenticate);
 router.get('/', authorize("admin"), DiscountController.getAll);
 
 // lấy mã giảm giá mà user hiện tại chưa sử dụng
-router.get('/available', DiscountController.getAvailableForUser);
+router.get('/available', authorize("user"), DiscountController.getAvailableForUser);
 
 // tạo mã giảm giá
 router.post('/', authorize("admin"), DiscountController.create);

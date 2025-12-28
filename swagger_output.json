@@ -1233,6 +1233,27 @@
         ]
       }
     },
+    "/api/promos/available": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "Discounts"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/promos/{id}": {
       "put": {
         "description": "",
