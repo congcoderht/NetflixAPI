@@ -75,6 +75,51 @@ class OrderController {
             next(error);
         }
     }
+
+    static async createSubscriptionOrder(req, res, next) {
+        try {
+            const userId = req.user && req.user.id;
+            if (!userId) return res.status(401).json({ success: false, message: 'Unauthenticated' });
+
+            const { plan_id } = req.body;
+
+            const result = await OrderService.createSubscriptionOrder({
+                userId,
+                planId: plan_id
+            });
+
+            if (!result.success) {
+                return res.status(400).json(result);
+            }
+
+            res.status(201).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    static async applyDiscountToOrder(req, res, next) {
+        try {
+            const userId = req.user && req.user.id;
+            if (!userId) return res.status(401).json({ success: false, message: 'Unauthenticated' });
+
+            const { order_id, discount_id } = req.body;
+
+            const result = await OrderService.applyDiscountToOrder({
+                orderId: order_id,
+                discountId: discount_id,
+                userId: userId
+            });
+
+            if (!result.success) {
+                return res.status(400).json(result);
+            }
+
+            res.status(200).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = OrderController;

@@ -188,7 +188,7 @@ class OrderRepository {
         const result = await execute(query);
         return result.recordset[0].total;
     }
-
+    // lấy doanh thu của năm hiện tại
     static async sumRevenueThisYear() {
         let query = `
             SELECT COALESCE(SUM(amount), 0) AS total
@@ -199,6 +199,93 @@ class OrderRepository {
         `;
         const result = await execute(query);
         return result.recordset[0].total;
+    }
+
+    // tạo đơn hàng
+    static async createOrder({userId, planId, discountId, originalAmount, discountAmount, finalAmount, orderType}) {
+        const orderCode = 'ORD' + Math.floor(Date.now() / 1000);
+        const query = `
+            INSERT INTO Orders (user_id, plan_id, order_code, order_type, amount, discount_id, discount_amount, final_amount, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', GETDATE());
+            SELECT SCOPE_IDENTITY() AS order_id;
+        `;
+        const result = await execute(query, [userId, planId, orderCode, orderType, originalAmount, discountId || null, discountAmount, finalAmount]);
+        return result.recordset[0] ? result.recordset[0].order_id : null;
+    }
+
+    // lấy chi tiết đơn hàng theo orderId
+    static async getOrderDetail(orderId) {
+        const query = `
+            SELECT
+                o.order_id,
+                o.order_code,
+                o.user_id,
+                o.plan_id,
+                s.name AS plan_name,
+                s.price AS plan_price,
+                o.order_type,
+                o.amount AS original_amount,
+                d.code AS discount_code,
+                o.discount_id,
+                o.discount_amount,
+                o.final_amount,
+                o.status,
+                o.created_at
+            FROM Orders o
+            LEFT JOIN Subscription_plans s ON o.plan_id = s.plan_id
+            LEFT JOIN Discounts d ON o.discount_id = d.discount_id
+            WHERE o.order_id = ?
+        `;
+        const result = await execute(query, [orderId]);
+        return result.recordset[0];
+    }
+
+    // Cập nhật thông tin mã giảm giá cho đơn hàng
+    static async updateOrderDiscount(orderId, discountId, discountAmount, finalAmount) {
+        const query = `
+            UPDATE Orders
+            SET discount_id = ?, discount_amount = ?, final_amount = ?
+            WHERE order_id = ?
+        `;
+        await execute(query, [discountId, discountAmount, finalAmount, orderId]);
+    }
+
+    // Get order detail with plan duration for subscription update
+    static async getOrderDetailWithPlan(orderId) {
+        const query = `
+            SELECT
+                o.order_id,
+                o.order_code,
+                o.user_id,
+                o.plan_id,
+                s.name AS plan_name,
+                s.price AS plan_price,
+                s.durations,
+                o.order_type,
+                o.amount AS original_amount,
+                d.code AS discount_code,
+                o.discount_id,
+                o.discount_amount,
+                o.final_amount,
+                o.status,
+                o.created_at
+            FROM Orders o
+            LEFT JOIN Subscription_plans s ON o.plan_id = s.plan_id
+            LEFT JOIN Discounts d ON o.discount_id = d.discount_id
+            WHERE o.order_id = ?
+        `;
+        const result = await execute(query, [orderId]);
+        return result.recordset[0];
+    }
+
+    // Update order status
+    static async updateOrderStatus(orderId, status) {
+        const query = `
+            UPDATE Orders
+            SET status = ?
+            WHERE order_id = ?
+        `;
+        await execute(query, [status, orderId]);
     }
 
 }

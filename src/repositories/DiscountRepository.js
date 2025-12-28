@@ -141,7 +141,61 @@ class DiscountRepository {
         return result.recordset || [];
     }
 
+    // Find discount by code
+    static async findByCode(code) {
+        const query = `
+            SELECT *
+            FROM Discounts
+            WHERE code = ?
+        `;
+        const result = await execute(query, [code]);
+        return result.recordset[0] || null;
+    }
 
+    // Find discount by ID
+    static async findById(id) {
+        const query = `
+            SELECT *
+            FROM Discounts
+            WHERE discount_id = ?
+        `;
+        const result = await execute(query, [id]);
+        return result.recordset[0] || null;
+    }
+
+    // Kiểm tra user có sở hữu mã giảm giá này không
+    static async userOwnsDiscount(userId, discountId) {
+        const query = `
+            SELECT TOP 1 1
+            FROM User_Discounts
+            WHERE user_id = ? AND discount_id = ?
+        `;
+        const result = await execute(query, [userId, discountId]);
+        return result.recordset.length > 0;
+    }
+
+    // Kiểm tra user đã sử dụng mã giảm giá này chưa
+    static async userUsedDiscount(userId, discountId) {
+        const query = `
+            SELECT TOP 1 1
+            FROM User_Discounts
+            WHERE user_id = ? AND discount_id = ? AND is_used = 1
+        `;
+        const result = await execute(query, [userId, discountId]);
+        return result.recordset.length > 0;
+    }
+
+    // Đánh dấu mã giảm giá đã được sử dụng
+    static async markDiscountAsUsed(userId, discountId) {
+        const query = `
+            UPDATE User_Discounts
+            SET is_used = 1
+            WHERE user_id = ? AND discount_id = ?
+        `;
+        await execute(query, [userId, discountId]);
+    }
+
+    // Kiểm tra mã giảm giá tồn tại
     static async existDiscount(code) {
         let query = `
             SELECT TOP 1 1
@@ -153,16 +207,8 @@ class DiscountRepository {
         return result.recordset.length > 0;
     }
 
-    static async existDiscountId(id) {
-        let query = `
-            SELECT TOP 1 1
-            FROM Discounts
-            WHERE discount_id = ?
-        `;
 
-        const result = await execute(query, [id]);
-        return result.recordset.length > 0;
-    }
+   
 }
 
 module.exports = DiscountRepository;
