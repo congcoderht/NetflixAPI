@@ -19,6 +19,8 @@ class MovieService {
             title: item.title,
             description: item.description,
             releaseYear: item.release_year,
+            posterUrl: item.poster_url,
+            bannerUrl: item.banner_url,
             avgRating: item.avg_rating,
             genres: item.genres && item.genres.length > 0
                 ? item.genres.split(',').map(g => g.trim())
@@ -52,6 +54,7 @@ class MovieService {
             description: movie.description,
             releaseYear: movie.release_year,
             posterUrl: movie.poster_url,
+            bannerUrl: movie.banner_url,
             trailerUrl: movie.trailer_url,
             urlPhim: movie.url_phim,
             avgRating: movie.avg_rating,
