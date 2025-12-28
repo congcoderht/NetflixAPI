@@ -96,6 +96,18 @@ class OrderRepository {
         }
     }
 
+    // kiểm tra xem order_id có tồn tại hay không
+    static async existOrder({orderId}) {
+        let query = `
+            SELECT TOP 1 1
+            FROM Orders
+            WHERE order_id = ?
+        `;
+        
+        const result = await execute(query, [orderId]);
+        return result.length > 0;
+    }
+
     // lấy doanh thu theo ngày trong tháng hiện tại
     static async revenueByDayInCurrentMonth() {
         let query = `

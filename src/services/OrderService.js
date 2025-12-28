@@ -46,6 +46,23 @@ class OrderService {
             throw new Error(`Lỗi khi lấy tất cả đơn hàng: ${error}`)
         }
     }
+
+    static async updateStatus({orderId, status}) {
+        try{
+            const existingOrder = await OrderRepository.existOrder(orderId);
+
+            if(!existingOrder) {
+                return {
+                    success: false,
+                    message: "Không tìm thấy order_id"
+                }
+            }
+
+            // if(status )
+        }catch(error) {
+            throw new Error(`Lỗi khi lấy tất cả đơn hàng: ${error}`)
+        }
+    }
 }
 
 module.exports = OrderService;
