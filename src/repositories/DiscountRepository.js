@@ -86,6 +86,38 @@ class DiscountRepository {
         return true;
     }
 
+    static async getAll({offset, limit, search}) {
+        let where = 'WHERE 1=1'
+        const params = [];
+
+        if(search) {
+            where += 'AND code LIKE ?'
+            params.push(`%${search}%`);
+        }
+
+        const dataQuery = `
+            SELECT * 
+            FROM Discounts
+            ${where}
+            ORDER BY created_at DESC
+            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+        `;
+
+        const countQuery = `
+            SELECT COUNT(*) AS total
+            FROM Discounts
+            ${where}
+        `;
+
+        const dataResult = await execute(dataQuery, [...params, offset, limit]);
+        const countResult = await execute(countQuery, params);
+
+        return {
+            rows: dataResult.recordset,
+            total: countResult.recordset[0].total
+        }
+    }
+
 
     static async existDiscount(code) {
         let query = `

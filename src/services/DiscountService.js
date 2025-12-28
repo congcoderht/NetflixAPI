@@ -140,6 +140,23 @@ class DiscountService {
         }
     }
 
+    static async getAll({page, limit, search}) {
+        try {
+            const offset = (page - 1) * limit;
+
+            const {rows, total} = await DiscountRepository.getAll({offset, limit, search});
+
+            return {
+                rows, 
+                total, 
+                page, 
+                limit
+            }
+        }catch(error) {
+            throw new Error(`Lỗi khi lấy danh sách mã giảm giá: ${error}`);
+        }
+    }
+
 }
 
 module.exports = DiscountService;
