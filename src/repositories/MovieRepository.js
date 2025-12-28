@@ -123,11 +123,11 @@ class MovieRepository {
     const safeLimit = Number(limit) > 0 ? Number(limit) : 10;
     const offset = (safePage - 1) * safeLimit;
 
-    let where = `WHERE 1 = 1`;
+    let where = `WHERE m.is_deleted = '0'`;
     const params = [];
-
+    
     if (title && title.trim() !== "") {
-        where += ` AND m.title LIKE ?`;
+        where += ` AND m.title LIKE ?` ;
         params.push(`%${title.trim()}%`);
     }
 
@@ -154,6 +154,8 @@ class MovieRepository {
             m.title,
             m.description,
             m.release_year,
+            m.poster_url,
+            m.banner_url,
             ISNULL(r.avg_rating, 0) AS avg_rating,
             ISNULL(genre_list.genres, '') AS genres
         FROM Movie m
@@ -192,6 +194,7 @@ class MovieRepository {
                 m.description,
                 m.release_year,
                 m.poster_url,
+                m.banner_url,
                 m.trailer_url,
                 m.url_phim,
                 ISNULL(r.avg_rating, 0) AS avg_rating,
@@ -214,7 +217,7 @@ class MovieRepository {
                 GROUP BY gf.movie_id
             ) genre_list ON m.movie_id = genre_list.movie_id
 
-            WHERE m.movie_id = ?
+            WHERE m.movie_id = ? and m.is_delete = '0'
         `;
         const result = await execute(query, [movieId]);
         return result.recordset[0];
