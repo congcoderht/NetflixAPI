@@ -28,6 +28,74 @@ class OrderRepository {
         return result.recordset;
     }
 
+    static async findAll({offset, limit, search, status, planId}) {
+        let where = 'WHERE 1=1'
+
+        const params = [];
+
+        if(search) {
+            where += 'AND (u.full_name LIKE ? OR u.email LIKE ? OR s.name LIKE ?)';
+            params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+        }
+
+        if(status) {
+            where += 'AND o.status = ?';
+            params.push(`${status}`)
+        }
+
+        if(planId) {
+            where += 'AND s.plan_id = ?';
+            params.push(`${planId}`);
+        }
+
+        const dataQuery = `
+            SELECT
+            o.order_id,
+            o.user_id,
+            u.full_name,
+            u.email,
+            o.order_code, 
+            o.order_type, 
+            o.status, 
+            o.amount, 
+            o.paid_at, 
+            s.*, 
+            d.discount_id, 
+            o.discount_amount, 
+            o.final_amount
+            FROM Orders AS o
+            LEFT JOIN Subscription_plans AS s
+                ON s.plan_id = o.plan_id
+            LEFT JOIN Discounts AS d
+                ON o.discount_id = d.discount_id
+            JOIN [User] AS u
+                ON u.user_id = o.user_id
+            ${where}
+            ORDER BY o.paid_at DESC
+            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY 
+        `;
+
+        const countQuery = `
+            SELECT COUNT(*) AS total
+            FROM Orders AS o
+            LEFT JOIN Subscription_plans AS s
+                ON s.plan_id = o.plan_id
+            LEFT JOIN Discounts AS d
+                ON o.discount_id = d.discount_id
+            JOIN [User] AS u
+                ON u.user_id = o.user_id
+            ${where}
+        `;
+
+        const dataResult = await execute(dataQuery, [...params, offset, limit]);
+        const countResult = await execute(countQuery, params);
+
+        return {
+            rows: dataResult.recordset,
+            total: countResult.recordset[0].total
+        }
+    }
+
     // lấy doanh thu theo ngày trong tháng hiện tại
     static async revenueByDayInCurrentMonth() {
         let query = `
