@@ -125,7 +125,7 @@ class UserRepository {
       SELECT * 
       FROM [User]
       Where username = ?
-    `
+    `;
     const result = await execute(query, [username]);
     return result.recordset.length > 0;
   }

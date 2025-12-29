@@ -2,6 +2,7 @@ const UserRepository = require('../repositories/UserRepository');
 const { comparePassword, hashPassword } = require('../utils/password');
 const { generateToken } = require('../utils/jwt');
 const SubRepository = require('../repositories/SubRepository');
+const config = require('../config/env');
 
 /**
  * Service Layer - Authentication Logic
@@ -140,7 +141,8 @@ class AuthService {
         message: 'Đăng nhập thành công',
         data: {
           user: userResponse,
-          token
+          access_token: token,
+          expires_in: config.jwt.expiresIn
         }
       };
     } catch (error) {
