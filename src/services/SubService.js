@@ -5,7 +5,7 @@ class SubService {
     const plans = await SubRepository.findAllPlans();
     // map to DTO
     return (plans || []).map(p => ({
-      planId: p.planId,
+      plan_id: p.plan_id,
       name: p.name,
       price: p.price,
       durations: p.durations,

@@ -139,7 +139,7 @@ class OrderService {
             const pendingOrder = await OrderRepository.getOrderDetailWithPlan(orderId);
             return {
                 success: true,
-                message: "Cập nhật trạng thái thành công",
+                message: "Đơn hàng đã lưu có thể thanh toán sau",
                 data: {
                     order: pendingOrder
                 }
