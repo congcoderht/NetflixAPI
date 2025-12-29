@@ -17,7 +17,7 @@ class SubRepository {
 
     static async getUserCurrentSub(userId) {
         let query = `
-            SELECT s.plan_id, s.name, s.price, s.description, u.start_date, u.end_date, u.is_active
+            SELECT s.plan_id, s.name, s.price, s.description, u.start_date, u.end_date, u.is_active, datediff(day, GETDATE(), u.end_date) AS left_day
             FROM User_subscriptions AS u
             LEFT JOIN Subscription_plans AS s ON s.plan_id = u.plan_id
             WHERE u.user_id = ? 
@@ -31,7 +31,7 @@ class SubRepository {
     static async findAllPlans() {
         const query = `
             SELECT
-                plan_id AS planId,
+                plan_id,
                 name,
                 price,
                 durations,
