@@ -20,7 +20,7 @@ class WatchListController {
 
             res.status(200).json({
                 success: true,
-                movies: rows,
+                data: rows,
                 pagination: {
                     page: currentPage,
                     limit: currentLimit,

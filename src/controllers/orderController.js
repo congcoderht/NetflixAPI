@@ -42,14 +42,12 @@ class OrderController {
 
             res.status(200).json({
                 success: true,
-                data: {
-                    orders: rows,
-                    pagination: {
-                        page: currentPage,
-                        limit: currentLimit,
-                        total: total,
-                        totalPages
-                    }
+                data: rows,
+                pagination: {
+                    page: currentPage,
+                    limit: currentLimit,
+                    total: total,
+                    totalPages
                 }
             })
         }catch(error) {

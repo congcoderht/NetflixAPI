@@ -70,14 +70,12 @@ class DiscountController {
 
             return res.status(200).json({
                 success: true,
-                data: {
-                    discounts: rows,
-                    pagination: {
-                        page: currentPage,
-                        limit: currentLimit,
-                        total,
-                        totalPages
-                    }
+                data: rows,
+                pagination: {
+                    page: currentPage,
+                    limit: currentLimit,
+                    total,
+                    totalPages
                 }
             })
 
