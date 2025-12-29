@@ -122,7 +122,7 @@ class OrderRepository {
         let query = `
             SELECT CAST(paid_at AS DATE) as date, COALESCE(SUM(amount), 0) AS revenue
             FROM Orders
-            WHERE status = 'PAID'
+            WHERE status = 'COMPLETED'
                 AND paid_at >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)
                 AND paid_at < DATEADD(MONTH, 1, DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1))
             GROUP BY CAST(paid_at AS DATE)
