@@ -31,7 +31,7 @@ class SubRepository {
     static async findAllPlans() {
         const query = `
             SELECT
-                plan_id AS planId,
+                plan_id,
                 name,
                 price,
                 durations,
