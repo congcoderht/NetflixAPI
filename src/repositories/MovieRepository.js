@@ -192,6 +192,7 @@ class MovieRepository {
     return result.recordset;
     }
 
+    // Xem chi tiết phim
     static async GetDetails(movieId) {
         let query = `
             SELECT
@@ -223,7 +224,7 @@ class MovieRepository {
                 GROUP BY gf.movie_id
             ) genre_list ON m.movie_id = genre_list.movie_id
 
-            WHERE m.movie_id = ? and m.is_delete = '0'
+            WHERE m.movie_id = ? and m.is_deleted = '0'
         `;
         const result = await execute(query, [movieId]);
         return result.recordset[0];
@@ -287,6 +288,126 @@ class MovieRepository {
         const result = await execute(query);
         return result.recordset || [];
     }
+
+    // Tao phim moi
+    static async createMovie({ title, description, release_year, poster_url, banner_url, trailer_url, url_phim }) {
+        const query = `
+            INSERT INTO Movie (title, description, release_year, poster_url, banner_url, trailer_url, url_phim)
+            VALUES (?, ?, ?, ?, ?, ?, ?);
+            SELECT SCOPE_IDENTITY() AS movieId;
+        `;
+        const result = await execute(query, [title, description, release_year, poster_url, banner_url, trailer_url, url_phim]);
+        const idRow = result.recordset && result.recordset[0];
+        return idRow ? Number(idRow.movieId) : null;
+    }
+
+    // tao genre moi
+    static async createGenre(name) {
+        const insert = `
+            INSERT INTO Genres (name)
+            VALUES (?);
+            SELECT SCOPE_IDENTITY() AS genres_id;
+        `;
+        const result = await execute(insert, [name]);
+        const row = result.recordset && result.recordset[0];
+        return row ? Number(row.genres_id) : null;
+    }
+
+
+    static async findGenreByName(name) {
+        const q = `
+            SELECT genres_id AS id
+            FROM Genres
+            WHERE name = ?
+        `;
+        const res = await execute(q, [name]);
+        return res.recordset && res.recordset[0] ? Number(res.recordset[0].id) : null;
+    }
+
+    static async linkGenreToMovie(movieId, genresId) {
+        const q = `
+            INSERT INTO Genres_Film (movie_id, genres_id)
+            VALUES (?, ?);
+        `;
+        await execute(q, [movieId, genresId]);
+    }
+
+    // Create cast member and return member_id
+    static async createCastMember({ name, birthday }) {
+        const q = `
+            INSERT INTO CastMember (name, birthday)
+            VALUES (?, ?);
+            SELECT SCOPE_IDENTITY() AS member_id;
+        `;
+        const result = await execute(q, [name, birthday]);
+        const row = result.recordset && result.recordset[0];
+        return row ? Number(row.member_id) : null;
+    }
+
+    static async linkAttend(movieId, memberId, role) {
+        const q = `
+            INSERT INTO Attend (movie_id, member_id, role)
+            VALUES (?, ?, ?);
+        `;
+        await execute(q, [movieId, memberId, role]);
+    }
+
+    static async removeGenresLinks(movieId) {
+        const q = `DELETE FROM Genres_Film WHERE movie_id = ?;`;
+        await execute(q, [movieId]);
+    }
+
+    static async removeAttendLinks(movieId) {
+        const q = `DELETE FROM Attend WHERE movie_id = ?;`;
+        await execute(q, [movieId]);
+    }
+
+    static async updateMovie(movieId, { title, description, release_year, poster_url, banner_url, trailer_url, url_phim }) {
+        const q = `
+            UPDATE Movie
+            SET title = ?,
+                description = ?,
+                release_year = ?,
+                poster_url = ?,
+                banner_url = ?,
+                trailer_url = ?,
+                url_phim = ?
+            WHERE movie_id = ?;
+        `;
+        await execute(q, [title, description, release_year, poster_url, banner_url, trailer_url, url_phim, movieId]);
+        return movieId;
+    }
+
+    static async findAllCastMembers() {
+        const query = `
+            SELECT
+                member_id AS memberId,
+                name,
+                birthday
+            FROM CastMember
+            ORDER BY name
+        `;
+        const result = await execute(query);
+        return result.recordset || [];
+    }
+    
+   
+    static async toggleDeleteMovie(movieId) {
+    const query = `
+        UPDATE Movie
+        SET is_deleted = CASE 
+            WHEN is_deleted = 1 THEN 0
+            ELSE 1
+        END
+        WHERE movie_id = ?;
+    `;
+
+    const result = await execute(query, [movieId]);
+    return result.rowsAffected?.[0] || 0;
+}
+
+
+
 }
 
 module.exports = MovieRepository;

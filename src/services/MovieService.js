@@ -94,6 +94,124 @@ class MovieService {
         const genres = await MovieRepository.findAllGenres();
         return (genres || []).map(g => ({ id: g.id, name: g.name }));
     }
+
+    // Create a new genre
+    static async createGenre(name) {
+        if (!name || !name.trim()) {
+            throw new Error('Genre name is required');
+        }
+        const genreId = await MovieRepository.createGenre(name.trim());
+        return { id: genreId, name: name.trim() };
+    }
+
+    // Create a new cast member
+    static async createCastMember(name, birthday) {
+        if (!name || !name.trim()) {
+            throw new Error('Member name is required');
+        }
+        const memberId = await MovieRepository.createCastMember({ name: name.trim(), birthday });
+        return { memberId, name: name.trim(), birthday };
+    }
+
+    // Get all cast members
+    static async getAllCastMembers() {
+        const members = await MovieRepository.findAllCastMembers();
+        return (members || []).map(m => ({ memberId: m.memberId, name: m.name, birthday: m.birthday }));
+    }
+
+    static async createMovie(payload) {
+        // basic validation
+        if (!payload || !payload.title) throw new Error('title is required');
+
+        const movieId = await MovieRepository.createMovie({
+            title: payload.title,
+            description: payload.description || null,
+            release_year: payload.release_year || null,
+            poster_url: payload.poster_url || null,
+            banner_url: payload.banner_url || null,
+            trailer_url: payload.trailer_url || null,
+            url_phim: payload.url_phim || null
+        });
+
+        // link genres by ID (genres already created via POST /genres)
+        if (Array.isArray(payload.genres)) {
+            for (const g of payload.genres) {
+                if (g.genres_id) {
+                    await MovieRepository.linkGenreToMovie(movieId, Number(g.genres_id));
+                }
+            }
+        }
+
+        // link cast members by ID (members already created via POST /members)
+        if (Array.isArray(payload.cast_and_crew)) {
+            for (const c of payload.cast_and_crew) {
+                if (c.member_id) {
+                    await MovieRepository.linkAttend(movieId, Number(c.member_id), c.role || null);
+                }
+            }
+        }
+
+        return { movieId };
+    }
+
+    // Update existing movie and re-link genres and cast/crew
+    static async updateMovie(movieId, payload) {
+        if (!movieId || Number(movieId) <= 0) throw new Error('Invalid movie id');
+        if (!payload) throw new Error('Payload is required');
+
+        await MovieRepository.updateMovie(Number(movieId), {
+            title: payload.title || null,
+            description: payload.description || null,
+            release_year: payload.release_year || null,
+            poster_url: payload.poster_url || null,
+            banner_url: payload.banner_url || null,
+            trailer_url: payload.trailer_url || null,
+            url_phim: payload.url_phim || null
+        });
+
+        // remove existing links
+        await MovieRepository.removeGenresLinks(Number(movieId));
+        await MovieRepository.removeAttendLinks(Number(movieId));
+
+        // re-link genres
+        if (Array.isArray(payload.genres)) {
+            for (const g of payload.genres) {
+                if (g.genres_id) {
+                    await MovieRepository.linkGenreToMovie(Number(movieId), Number(g.genres_id));
+                }
+            }
+        }
+
+        // re-link cast members
+        if (Array.isArray(payload.cast_and_crew)) {
+            for (const c of payload.cast_and_crew) {
+                if (c.member_id) {
+                    await MovieRepository.linkAttend(Number(movieId), Number(c.member_id), c.role || null);
+                }
+            }
+        }
+
+        return { movieId: Number(movieId) };
+    }
+    
+    // Soft delete or restore movie
+    static async toggleDeleteMovie(movieId) {
+    const affected = await MovieRepository.toggleDeleteMovie(movieId);
+
+    if (affected === 0) {
+        return {
+            success: false,
+            message: "Không tìm thấy phim"
+        };
+    }
+
+    return {
+        success: true,
+        message: "Đã thay đổi trạng thái xóa phim"
+    };
+    }
+
+
 }
 
 module.exports = MovieService;

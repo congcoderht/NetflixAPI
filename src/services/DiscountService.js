@@ -157,6 +157,26 @@ class DiscountService {
         }
     }
 
+    static async getAvailableForUser(userId) {
+        try {
+            if (!userId) throw new Error('User id is required');
+            const rows = await DiscountRepository.findAvailableForUser(userId);
+            // map to API DTO
+            return (rows || []).map(r => ({
+                discountId: r.discount_id,
+                code: r.code,
+                discountType: r.discount_type,
+                value: r.value,
+                minOrderValue: r.min_order_value,
+                maxDiscount: r.max_discount,
+                endDate: r.end_date,
+                isUsed: false
+            }));
+        } catch (error) {
+            throw new Error(`Lỗi khi lấy mã giảm giá khả dụng: ${error.message}`);
+        }
+    }
+
 }
 
 module.exports = DiscountService;
