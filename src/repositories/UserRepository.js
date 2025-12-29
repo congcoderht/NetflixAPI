@@ -120,6 +120,16 @@ class UserRepository {
     return result.recordset[0];
   }
 
+  static async existUsername(username) {
+    let query = `
+      SELECT * 
+      FROM [User]
+      Where username = ?
+    `;
+    const result = await execute(query, [username]);
+    return result.recordset.length > 0;
+  }
+
   // Tạo user mới
   static async create(userData) {
     const { username, email, password, full_name, role } = userData;

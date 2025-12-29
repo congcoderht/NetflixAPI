@@ -2,6 +2,7 @@ const UserRepository = require('../repositories/UserRepository');
 const { comparePassword, hashPassword } = require('../utils/password');
 const { generateToken } = require('../utils/jwt');
 const SubRepository = require('../repositories/SubRepository');
+const config = require('../config/env');
 
 /**
  * Service Layer - Authentication Logic
@@ -33,6 +34,12 @@ class AuthService {
         return { success: false, message: "Email đã được sử dụng" };
       }
 
+      //check username
+      const usernameExists = await UserRepository.existUsername(username) 
+      if(usernameExists) {
+        return { success: false, message: "username đã được sử dụng" };
+      }
+
       if (password.length < 6) {
         return { success: false, message: "Mật khẩu phải có ít nhất 6 kí tự" };
       }
@@ -48,11 +55,6 @@ class AuthService {
         role: "USER",
       });
 
-      const token = generateToken({
-        id: newUser.id,
-        email: newUser.email,
-      });
-
       // remove password in response
       delete newUser.password;
 
@@ -61,7 +63,6 @@ class AuthService {
         message: "Đăng ký thành công",
         data: {
           user: newUser,
-          token,
         },
       };
 
@@ -140,7 +141,8 @@ class AuthService {
         message: 'Đăng nhập thành công',
         data: {
           user: userResponse,
-          token
+          access_token: token,
+          expires_in: config.jwt.expiresIn
         }
       };
     } catch (error) {
