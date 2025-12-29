@@ -27,7 +27,9 @@ class MovieRepository {
                 m.release_year,
                 m.poster_url,
                 m.trailer_url,
-                m.url_phim
+                m.url_phim,
+                m.is_deleted,
+                m.banner_url
             ORDER BY total_views DESC;
         `;
         const result = await execute(query);
@@ -50,7 +52,9 @@ class MovieRepository {
                 m.release_year,
                 m.poster_url,
                 m.trailer_url,
-                m.url_phim
+                m.url_phim,
+                m.is_deleted,
+                m.banner_url
             ORDER BY avg_rating DESC, rating_count DESC
         `;
         const result = await execute(query);
@@ -72,7 +76,9 @@ class MovieRepository {
                 m.release_year,
                 m.poster_url,
                 m.trailer_url,
-                m.url_phim
+                m.url_phim,
+                m.is_deleted,
+                m.banner_url
             ORDER BY total_watch_time DESC
         `;
         const result = await execute(query);
