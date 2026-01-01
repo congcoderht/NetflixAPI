@@ -58,7 +58,7 @@ class MovieService {
             posterUrl: movie.poster_url,
             bannerUrl: movie.banner_url,
             trailerUrl: movie.trailer_url,
-            urlPhim: movie.url_phim,
+            movieUrl: movie.url_phim,
             avgRating: movie.avg_rating,
             genres: movie.genres && movie.genres.length > 0
                 ? movie.genres.split(',').map(g => g.trim())
@@ -128,11 +128,11 @@ class MovieService {
         const movieId = await MovieRepository.createMovie({
             title: payload.title,
             description: payload.description || null,
-            releaseyear: payload.release_year || null,
-            posterUrl: payload.poster_url || null,
-            bannerUrl: payload.banner_url || null,
-            trailerUrl: payload.trailer_url || null,
-            movieUrl: payload.url_phim || null
+            release_year: payload.release_year || null,
+            poster_url: payload.poster_url || null,
+            banner_url: payload.banner_url || null,
+            trailer_url: payload.trailer_url || null,
+            movie_url: payload.url_phim || null
         });
 
         // link genres by ID (genres already created via POST /genres)
@@ -164,11 +164,11 @@ class MovieService {
         await MovieRepository.updateMovie(Number(movieId), {
             title: payload.title || null,
             description: payload.description || null,
-            releaseyear: payload.release_year || null,
-            posterUrl: payload.poster_url || null,
-            bannerUrl: payload.banner_url || null,
-            trailerUrl: payload.trailer_url || null,
-            movieUrl: payload.url_phim || null
+            release_year: payload.release_year || null,
+            poster_url: payload.poster_url || null,
+            banner_url: payload.banner_url || null,
+            trailer_url: payload.trailer_url || null,
+            movie_url: payload.url_phim || null
         });
 
         // remove existing links
