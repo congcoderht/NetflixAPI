@@ -11,6 +11,8 @@ class MovieService {
             limit
         });
 
+        console.log("check movies: ", data);
+
         const total = await MovieRepository.findTotal(filters);
 
         // Map repository result to DTO shape
@@ -92,7 +94,7 @@ class MovieService {
 
     static async getAllGenres() {
         const genres = await MovieRepository.findAllGenres();
-        return (genres || []).map(g => ({ id: g.id, name: g.name }));
+        return (genres || []).map(g => ({ genreId: g.id, name: g.name }));
     }
 
     // Create a new genre
@@ -101,7 +103,7 @@ class MovieService {
             throw new Error('Genre name is required');
         }
         const genreId = await MovieRepository.createGenre(name.trim());
-        return { id: genreId, name: name.trim() };
+        return { genreId: genreId, name: name.trim() };
     }
 
     // Create a new cast member
@@ -126,11 +128,11 @@ class MovieService {
         const movieId = await MovieRepository.createMovie({
             title: payload.title,
             description: payload.description || null,
-            release_year: payload.release_year || null,
-            poster_url: payload.poster_url || null,
-            banner_url: payload.banner_url || null,
-            trailer_url: payload.trailer_url || null,
-            url_phim: payload.url_phim || null
+            releaseyear: payload.release_year || null,
+            posterUrl: payload.poster_url || null,
+            bannerUrl: payload.banner_url || null,
+            trailerUrl: payload.trailer_url || null,
+            movieUrl: payload.url_phim || null
         });
 
         // link genres by ID (genres already created via POST /genres)
@@ -162,11 +164,11 @@ class MovieService {
         await MovieRepository.updateMovie(Number(movieId), {
             title: payload.title || null,
             description: payload.description || null,
-            release_year: payload.release_year || null,
-            poster_url: payload.poster_url || null,
-            banner_url: payload.banner_url || null,
-            trailer_url: payload.trailer_url || null,
-            url_phim: payload.url_phim || null
+            releaseyear: payload.release_year || null,
+            posterUrl: payload.poster_url || null,
+            bannerUrl: payload.banner_url || null,
+            trailerUrl: payload.trailer_url || null,
+            movieUrl: payload.url_phim || null
         });
 
         // remove existing links

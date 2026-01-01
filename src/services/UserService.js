@@ -68,19 +68,71 @@ class UserService {
         };
       }
 
+      const userResponse = {
+        userId: user.user_id,
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      } 
+
       const [orders, subscriptions, history] = await Promise.all([
         OrderRepository.findByUserId(id),
         SubRepository.findByUserId(id),
         UserHistoryRepository.findByUserId(id),
       ]);
 
+      const mapOrderResponse = (order) => ({
+        orderId: order.order_id,
+        orderCode: order.order_code,
+        orderType: order.order_type,
+        status: order.status,
+        amount: order.amount,
+        paidAt: order.paid_at,
+        planId: order.plan_id,
+        planName: order.name,
+        planPrice: order.price,
+        durations: order.durations,
+        description: order.description,
+        discountId: order.discount_id,
+        discountAmount: order.discount_amount,
+        finalAmount: order.final_amount,
+      });
+
+      const mapSubscriptionResponse = (sub) => ({
+        planId: sub.plan_id,
+        name: sub.name,
+        price: sub.price,
+        durations: sub.durations,
+        description: sub.description,
+        isActive: sub.is_active,
+        startDate: sub.start_date,
+        endDate: sub.end_date,
+      });
+
+      const mapHistoryResponse = (h) => ({
+        movieId: h.movie_id,
+        isDone: h.is_done,
+        time: h.time,
+        lastWatchedAt: h.last_watched_at,
+      });
+
+      const ordersResponse = orders.map(mapOrderResponse);
+      const subscriptionsResponse = subscriptions.map(mapSubscriptionResponse);
+      const historyResponse = history.map(mapHistoryResponse);
+
       return {
         success: true,
         data: {
-          user,
-          subscriptions: subscriptions || [],
-          orders: orders || [],
-          history: history || [],
+          userResponse,
+          subscriptions: subscriptionsResponse || [],
+          orders: ordersResponse || [],
+          history: historyResponse || [],
         }
       };
     } catch (error) {
@@ -216,16 +268,30 @@ class UserService {
         };
       }
 
-      const updateUser = await UserRepository.updateProfile(id, payload);
+      const updatedUser = await UserRepository.updateProfile(id, payload);
 
-      if(!updateUser) {
+      if(!updatedUser) {
         throw new Error("Không thể cập nhật User");
       }
+
+      const userResponse = {
+        userId: updatedUser.user_id,
+        fullName: updatedUser.full_name,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        avatar: updatedUser.avatar,
+        role: updatedUser.role,
+        status: updatedUser.status,
+        createdAt: updatedUser.created_at,
+        gender: updatedUser.gender,
+        phoneNumber: updatedUser.phone_number,
+        birthday: updatedUser.birthday,
+      };
 
       return {
         success: true,
         message: "Cập nhật hồ sơ thành công",
-        data: updateUser
+        data: userResponse,
       }
     }catch(error) {
       throw new Error(`Lỗi khi cập nhật User: ${error}`);
@@ -247,12 +313,26 @@ class UserService {
 
       const newStatus = existingUser.status === "ACTIVE" ? "LOCKED" : "ACTIVE";
 
-      const updateUser = await UserRepository.updateStatus(id, newStatus);
+      const updatedUser = await UserRepository.updateStatus(id, newStatus);
+
+      const userResponse = {
+        userId: updatedUser.user_id,
+        fullName: updatedUser.full_name,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        avatar: updatedUser.avatar,
+        role: updatedUser.role,
+        status: updatedUser.status,
+        createdAt: updatedUser.created_at,
+        gender: updatedUser.gender,
+        phoneNumber: updatedUser.phone_number,
+        birthday: updatedUser.birthday,
+      };
 
       return {
         success: true,
         message: "Cập nhật User thành công",
-        data: updateUser
+        data: userResponse
       }
     }catch(error){
       throw new Error(`Lỗi khi cập nhật trạng thái User: ${error.message}`);

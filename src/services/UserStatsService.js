@@ -15,7 +15,21 @@ class UserStatsService {
     try {
         const newUsers = await UserRepository.findNewUsers();
 
-        return newUsers;
+        const userResponse = newUsers.map(user => ({
+            userId: user.user_id,
+            fullName: user.full_name,
+            username: user.username,
+            email: user.email,
+            avatar: user.avatar,
+            role: user.role,
+            status: user.status,
+            createdAt: user.created_at,
+            gender: user.gender,
+            phoneNumber: user.phone_number,
+            birthday: user.birthday,
+        }));
+
+        return userResponse;
     }catch(error) {
         throw new Error(`Lỗi khi lấy danh sách Users mới nhất: ${error}`);
     }

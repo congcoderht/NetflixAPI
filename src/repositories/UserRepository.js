@@ -49,7 +49,7 @@ class UserRepository {
   //lấy các user đăng kí mới nhất
   static async findNewUsers() {
     let query = `
-      SELECT TOP 3 user_id, full_name, email, username, created_at, status 
+      SELECT TOP 3 user_id, full_name, username, email, avatar, role, status, created_at, gender, phone_number, birthday 
       FROM [User]
       ORDER BY created_at DESC
     `;
