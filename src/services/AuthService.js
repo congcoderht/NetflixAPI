@@ -58,11 +58,24 @@ class AuthService {
       // remove password in response
       delete newUser.password;
 
+      const userResponse = {
+        userId: newUser.user_id,
+        fullName: newUser.full_name,
+        username: newUser.username,
+        email: newUser.email,
+        avatar: newUser.avatar,
+        role: newUser.role,
+        status: newUser.status,
+        createdAt: newUser.created_at,
+        gender: newUser.gender,
+        birthday: newUser.birthday,
+      }
+
       return {
         success: true,
         message: "Đăng ký thành công",
         data: {
-          user: newUser,
+          user: userResponse,
         },
       };
 
@@ -127,14 +140,17 @@ class AuthService {
 
       // Loại bỏ password và role khỏi response
       const userResponse = {
-        id: user.user_id,
-        full_name: user.full_name,
+        userId: user.user_id,
+        fullName: user.full_name,
         username: user.username,
         email: user.email,
         avatar: user.avatar,
         role: user.role,
-        status: user.status
-      };
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      }
 
       return {
         success: true,
@@ -161,7 +177,19 @@ class AuthService {
         throw new Error('Không tìm thấy user');
       }
 
-      return user;
+      const userResponse = {
+        userId: user.user_id,
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      }
+      return userResponse;
 
     } catch (error) {
       throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);

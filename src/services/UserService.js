@@ -31,8 +31,21 @@ class UserService {
         offset
       });
 
+      const users = rows.map(user => ({
+        userId: user.user_id,
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      }));
+
       return {
-        rows,
+        users,
         total,
         page,
         limit

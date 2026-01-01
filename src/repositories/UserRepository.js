@@ -90,7 +90,7 @@ class UserRepository {
   // return for user
   static async findByIdPublic(id) {
     let query = `
-      SELECT user_id, full_name, email, avatar, role, status, created_at, gender, phone_number, birthday
+      SELECT user_id, full_name, username, email, avatar, role, status, created_at, gender, phone_number, birthday
       FROM [User]
       WHERE user_id = ?
     `;
@@ -138,7 +138,7 @@ class UserRepository {
       [username, email, password, full_name, role]
     );
     const newUserId = result.recordset[0].user_id;
-    return this.findById(newUserId);
+    return this.findByIdPublic(newUserId);
   }
 
   // Kiểm tra email đã tồn tại chưa
