@@ -30,7 +30,7 @@ class OrderController {
                 limitNumber = 10;
             }
 
-            const {rows, total, page: currentPage, limit: currentLimit} = await OrderService.getAll({
+            const {orders, total, page: currentPage, limit: currentLimit} = await OrderService.getAll({
                 page: pageNumber,
                 limit: limitNumber,
                 search,
@@ -42,7 +42,7 @@ class OrderController {
 
             res.status(200).json({
                 success: true,
-                data: rows,
+                data: orders,
                 pagination: {
                     page: currentPage,
                     limit: currentLimit,

@@ -10,9 +10,20 @@ class WatchListService {
 
             const {rows, total} = await WatchListRepository.findByUserId({id, offset, limit});
 
-            console.log("check rows: ", rows);
+           const watchList = rows.map(w => ({
+                movieId: w.movie_id,
+                title: w.title,
+                description: w.description,
+                releaseYear: w.release_year,
+                posterUrl: w.poster_url,
+                trailerUrl: w.trailer_url,
+                movieUrl: w.url_phim,
+                bannerUrl: w.banner_url,
+                isDeleted: w.is_deleted,
+            }));
 
-            return {rows, total, page, limit};
+
+            return {watchList, total, page, limit};
 
         }catch(error) {
             throw new Error(`Lỗi khi lấy watchlist: ${error}`);

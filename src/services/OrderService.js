@@ -8,6 +8,24 @@ class OrderService {
         try {
             const orders = await OrderRepository.findByUserId(id);
 
+            const ordersResponse = orders.map(o => ({
+                orderId: o.order_id,
+                orderCode: o.order_code,
+                orderType: o.order_type,
+                status: o.status,
+                amount: o.amount,
+                paidAt: o.paid_at,
+                planId: o.plan_id,
+                planName: o.name,
+                planPrice: o.price,
+                durations: o.durations,
+                description: o.description,
+                discountId: o.discount_id,
+                discountAmount: o.discount_amount,
+                finalAmount: o.final_amount,
+            }));
+
+
             if(orders.length === 0) {
                 return {
                     success: true,
@@ -17,7 +35,7 @@ class OrderService {
 
             return {
                 success: true,
-                data: orders
+                data: ordersResponse
             }
         }catch(error) {
             throw new Error(`Lỗi khi lấy lịch sử đơn hàng: ${error}`);
@@ -38,8 +56,25 @@ class OrderService {
                 planId
             });
 
+            const orders = rows.map(o => ({
+                orderId: o.order_id,
+                orderCode: o.order_code,
+                orderType: o.order_type,
+                status: o.status,
+                amount: o.amount,
+                paidAt: o.paid_at,
+                planId: o.plan_id,
+                planName: o.name,
+                planPrice: o.price,
+                durations: o.durations,
+                description: o.description,
+                discountId: o.discount_id,
+                discountAmount: o.discount_amount,
+                finalAmount: o.final_amount,
+            }));
+
             return {
-                rows,
+                orders,
                 total,
                 page,
                 limit
@@ -123,13 +158,42 @@ class OrderService {
                 const updatedOrder = await OrderRepository.getOrderDetailWithPlan(orderId);
                 const updatedSub = await SubRepository.getUserActivePlanSubscription(order.user_id, order.plan_id);
 
+                const orderResponse = {
+                    orderId: updatedOrder.order_id,
+                    orderCode: updatedOrder.order_code,
+                    userId: updatedOrder.user_id,
+                    planId: updatedOrder.plan_id,
+                    planName: updatedOrder.plan_name,
+                    planPrice: updatedOrder.plan_price,
+                    durations: updatedOrder.durations,
+                    orderType: updatedOrder.order_type,
+                    originalAmount: updatedOrder.original_amount,
+                    discountCode: updatedOrder.discount_code,
+                    discountId: updatedOrder.discount_id,
+                    discountAmount: updatedOrder.discount_amount,
+                    finalAmount: updatedOrder.final_amount,
+                    status: updatedOrder.status,
+                    createdAt: updatedOrder.created_at,
+                };
+
+                const subscriptionResponse = {
+                    userId: updatedSub.user_id,
+                    planId: updatedSub.plan_id,
+                    name: updatedSub.name,
+                    price: updatedSub.price,
+                    startDate: updatedSub.start_date,
+                    endDate: updatedSub.end_date,
+                    isActive: updatedSub.is_active,
+                };
+
+
                 return {
                     success: true,
                     message: "Thanh toán thành công, gói đã được gia hạn/đăng ký",
                     data: {
-                        order: updatedOrder,
-                        subscription: updatedSub || null,
-                        discount_marked: discountMarked
+                        order: orderResponse,
+                        subscription: subscriptionResponse || null,
+                        discountMarked: discountMarked
                     }
                 }
             }
