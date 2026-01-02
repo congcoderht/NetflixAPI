@@ -157,8 +157,8 @@ class AuthService {
         message: 'Đăng nhập thành công',
         data: {
           user: userResponse,
-          access_token: token,
-          expires_in: config.jwt.expiresIn
+          accessToken: token,
+          expiresIn: config.jwt.expiresIn
         }
       };
     } catch (error) {
