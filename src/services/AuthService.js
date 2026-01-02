@@ -11,7 +11,7 @@ class AuthService {
   /**
    * Đăng ký user mới
    */
-  static async register(username, email, password, full_name) {
+  static async register(username, email, password, fullName) {
     try {
 
       if (!username || !email || !password) {
@@ -51,7 +51,7 @@ class AuthService {
         username: username.trim(),
         email: email.trim().toLowerCase(),
         password: hashedPassword,
-        full_name: full_name,
+        full_name: fullName,
         role: "USER",
       });
 

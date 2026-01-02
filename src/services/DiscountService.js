@@ -13,7 +13,7 @@ class DiscountService {
                 }
             }
 
-            if(!['percentage', 'fixed_amount'].includes(discount_type)) {
+            if(!['percentage', 'fixed_amount'].includes(discountType)) {
                 return {
                     success: false,
                     message: "loại giảm giá phải là percentage | fixed_amount"
@@ -55,12 +55,12 @@ class DiscountService {
 
             await DiscountRepository.create({
                 code, 
-                discountType, 
+                discount_type: discountType,
                 value, 
-                startDate, 
-                endDate, 
-                maxDiscount,
-                minOrderValue
+                start_date: startDate, 
+                end_date: endDate, 
+                max_discount: maxDiscount,
+                min_order_value: minOrderValue
             });
 
             return {
@@ -74,7 +74,7 @@ class DiscountService {
 
     static async update(discountData) {
         try {
-            let {id, discount_type, value, start_date, end_date, max_discount, min_order_value} = discountData;
+            let {id, discountType, value, startDate, endDate, maxDiscount, minOrderValue} = discountData;
 
             const existingId = await DiscountRepository.existDiscountId(id);
 
@@ -86,10 +86,10 @@ class DiscountService {
             }
 
             if (
-                start_date === null ||
-                end_date === null ||
+                startDate === null ||
+                endDate === null ||
                 value === null ||
-                discount_type === null
+                discountType === null
             ) {
                 return {
                     success: false,
@@ -105,30 +105,30 @@ class DiscountService {
                 value = num;
             }
 
-            if (max_discount !== undefined) {
-                const num = Number(max_discount);
+            if (maxDiscount !== undefined) {
+                const num = Number(maxDiscount);
                 if (Number.isNaN(num)) {
                     throw new Error('max_discount phải là số hợp lệ');
                 }
-                max_discount = num;
+                maxDiscount = num;
             }
 
-            if (min_order_value !== undefined) {
-                const num = Number(min_order_value);
+            if (minOrderValue !== undefined) {
+                const num = Number(minOrderValue);
                 if (Number.isNaN(num)) {
-                    throw new Error('min_order_value phải là số hợp lệ');
+                    throw new Error('minOrderValue phải là số hợp lệ');
                 }
-                min_order_value = num;
+                minOrderValue = num;
             }
 
             await DiscountRepository.update({ 
                 id,
-                discount_type, 
+                discount_type: discountType,
                 value, 
-                start_date, 
-                end_date, 
-                max_discount,
-                min_order_value
+                start_date: startDate, 
+                end_date: endDate, 
+                max_discount: maxDiscount,
+                min_order_value: minOrderValue
             });
 
             const updatedDiscount = await DiscountRepository.findById(id);
