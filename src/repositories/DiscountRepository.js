@@ -122,13 +122,13 @@ class DiscountRepository {
     static async findAvailableForUser(userId) {
         const query = `
             SELECT
-                d.discount_id,
+                d.discount_id as discountId,
                 d.code,
-                d.discount_type,
+                d.discount_type as discountType,
                 d.value,
-                d.min_order_value,
-                d.max_discount,
-                d.end_date
+                d.min_order_value as minOrderValue,
+                d.max_discount as maxDiscount,
+                d.end_date as endDate
             FROM Discounts d
             LEFT JOIN Orders o ON o.discount_id = d.discount_id AND o.user_id = ?
             WHERE o.order_id IS NULL

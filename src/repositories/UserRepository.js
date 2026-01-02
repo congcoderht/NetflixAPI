@@ -132,10 +132,10 @@ class UserRepository {
 
   // Tạo user mới
   static async create(userData) {
-    const { username, email, password, full_name, role } = userData;
+    const { username, email, password, fullName, role } = userData;
     const result = await execute(
-      'INSERT INTO [User] (username, email, password, full_name, role) OUTPUT INSERTED.user_id VALUES (?, ?, ?, ?, ?)',
-      [username, email, password, full_name, role]
+      'INSERT INTO [User] (username, email, password, fullName, role) OUTPUT INSERTED.user_id VALUES (?, ?, ?, ?, ?)',
+      [username, email, password, fullName, role]
     );
     const newUserId = result.recordset[0].user_id;
     return this.findById(newUserId);
