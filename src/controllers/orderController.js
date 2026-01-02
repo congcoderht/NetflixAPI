@@ -79,11 +79,11 @@ class OrderController {
             const userId = req.user && req.user.id;
             if (!userId) return res.status(401).json({ success: false, message: 'Unauthenticated' });
 
-            const { plan_id } = req.body;
+            const { planId } = req.body;
 
             const result = await OrderService.createSubscriptionOrder({
                 userId,
-                planId: plan_id
+                planId: planId
             });
 
             if (!result.success) {
@@ -101,11 +101,11 @@ class OrderController {
             const userId = req.user && req.user.id;
             if (!userId) return res.status(401).json({ success: false, message: 'Unauthenticated' });
 
-            const { order_id, discount_id } = req.body;
+            const { orderId, discountId } = req.body;
 
             const result = await OrderService.applyDiscountToOrder({
-                orderId: order_id,
-                discountId: discount_id,
+                orderId: orderId,
+                discountId: discountId,
                 userId: userId
             });
 

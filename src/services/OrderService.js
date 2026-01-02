@@ -316,17 +316,17 @@ class OrderService {
                 success: true,
                 message: 'Hóa đơn đã được tạo.',
                 data: {
-                    order_id: orderDetail.order_id,
-                    order_code: orderDetail.order_code,
-                    plan_id: orderDetail.plan_id,
-                    plan_name: orderDetail.plan_name,
-                    order_type: orderDetail.order_type,
-                    original_amount: orderDetail.original_amount,
-                    discount_code: 'NULL',
-                    discount_amount: 0,
-                    final_amount: orderDetail.final_amount,
+                    orderId: orderDetail.order_id,
+                    orderCode: orderDetail.order_code,
+                    planId: orderDetail.plan_id,
+                    planName: orderDetail.plan_name,
+                    orderType: orderDetail.order_type,
+                    originalAmount: orderDetail.original_amount,
+                    discountCode: 'NULL',
+                    discountAmount: 0,
+                    finalAmount: orderDetail.final_amount,
                     status: orderDetail.status,
-                    created_at: orderDetail.created_at
+                    createdAt: orderDetail.created_at
                 }
             };
         } catch (error) {
@@ -407,17 +407,17 @@ class OrderService {
                 success: true,
                 message: 'Hóa đơn sau khi áp dụng mã.',
                 data: {
-                    order_id: updatedOrder.order_id,
-                    order_code: updatedOrder.order_code,
-                    plan_id: updatedOrder.plan_id,
-                    plan_name: updatedOrder.plan_name,
-                    order_type: updatedOrder.order_type,
-                    original_amount: updatedOrder.original_amount,
-                    discount_code: updatedOrder.discount_code || 'NULL',
-                    discount_amount: updatedOrder.discount_amount || 0,
-                    final_amount: updatedOrder.final_amount,
+                    orderId: updatedOrder.order_id,
+                    orderCode: updatedOrder.order_code,
+                    planId: updatedOrder.plan_id,
+                    planName: updatedOrder.plan_name,
+                    orderType: updatedOrder.order_type,
+                    originalAmount: updatedOrder.original_amount,
+                    discountCode: updatedOrder.discount_code || 'NULL',
+                    discountAmount: updatedOrder.discount_amount || 0,
+                    finalAmount: updatedOrder.final_amount,
                     status: updatedOrder.status,
-                    created_at: updatedOrder.created_at
+                    createdAt: updatedOrder.created_at
                 }
             };
         } catch (error) {

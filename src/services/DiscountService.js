@@ -4,9 +4,9 @@ class DiscountService {
 
     static async create(discountData) {
         try {
-            let {code, discount_type, value, start_date, end_date, max_discount, min_order_value} = discountData;
+            let {code, discountType, value, startDate, endDate, maxDiscount, minOrderValue} = discountData;
 
-            if(!start_date || !end_date || !value || !code || !discount_type) {
+            if(!startDate || !endDate || !value || !code || !discountType) {
                 return {
                     success: false,
                     message: "Mã giảm giá, giá trị, loại, ngày bắt đầu, ngày kết thúc là bắt buộc"
@@ -37,30 +37,30 @@ class DiscountService {
                 value = num;
             }
 
-            if (max_discount !== undefined) {
-                const num = Number(max_discount);
+            if (maxDiscount !== undefined) {
+                const num = Number(maxDiscount);
                 if (Number.isNaN(num)) {
-                    throw new Error('max_discount phải là số hợp lệ');
+                    throw new Error('maxDiscount phải là số hợp lệ');
                 }
-                max_discount = num;
+                maxDiscount = num;
             }
 
-            if (min_order_value !== undefined) {
-                const num = Number(min_order_value);
+            if (minOrderValue !== undefined) {
+                const num = Number(minOrderValue);
                 if (Number.isNaN(num)) {
-                    throw new Error('min_order_value phải là số hợp lệ');
+                    throw new Error('minOrderValue phải là số hợp lệ');
                 }
-                min_order_value = num;
+                minOrderValue = num;
             }
 
             await DiscountRepository.create({
                 code, 
-                discount_type, 
+                discountType, 
                 value, 
-                start_date, 
-                end_date, 
-                max_discount,
-                min_order_value
+                startDate, 
+                endDate, 
+                maxDiscount,
+                minOrderValue
             });
 
             return {

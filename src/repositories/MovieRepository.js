@@ -290,14 +290,15 @@ class MovieRepository {
     }
 
     // Tao phim moi
-    static async createMovie({ title, description, release_year, poster_url, banner_url, trailer_url, url_phim }) {
+    static async createMovie({ title, description, releaseYear, posterUrl, bannerUrl, trailerUrl, movieUrl }) {
         const query = `
             INSERT INTO Movie (title, description, release_year, poster_url, banner_url, trailer_url, url_phim)
             VALUES (?, ?, ?, ?, ?, ?, ?);
             SELECT SCOPE_IDENTITY() AS movieId;
         `;
-        const result = await execute(query, [title, description, release_year, poster_url, banner_url, trailer_url, url_phim]);
+        const result = await execute(query, [title, description, releaseYear, posterUrl, bannerUrl, trailerUrl, movieUrl]);
         const idRow = result.recordset && result.recordset[0];
+        // return new movie
         return idRow ? Number(idRow.movieId) : null;
     }
 
@@ -362,7 +363,7 @@ class MovieRepository {
         await execute(q, [movieId]);
     }
 
-    static async updateMovie(movieId, { title, description, release_year, poster_url, banner_url, trailer_url, url_phim }) {
+    static async updateMovie(movieId, { title, description, releaseYear, posterUrl, bannerUrl, trailerUrl, movieUrl }) {
         const q = `
             UPDATE Movie
             SET title = ?,
@@ -374,7 +375,7 @@ class MovieRepository {
                 url_phim = ?
             WHERE movie_id = ?;
         `;
-        await execute(q, [title, description, release_year, poster_url, banner_url, trailer_url, url_phim, movieId]);
+        await execute(q, [title, description, releaseYear, posterUrl, bannerUrl, trailerUrl, movieUrl, movieId]);
         return movieId;
     }
 

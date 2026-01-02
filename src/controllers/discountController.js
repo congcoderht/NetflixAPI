@@ -4,7 +4,7 @@ class DiscountController {
 
     static async create(req, res, next) {
         try {
-            const {code, discount_type, value, min_order_value, max_discount, start_date, end_date} = req.body;
+            const {code, discountType, value, minOrderValue, maxDiscount, startDate, endDate} = req.body;
 
             const result = await DiscountService.create(req.body);
 
@@ -17,7 +17,7 @@ class DiscountController {
 
     static async update(req, res, next) {
         try {
-            const {discount_type, value, min_order_value, max_discount, start_date, end_date} = req.body;            
+            const {discountType, value, minOrderValue, maxDiscount, startDate, endDate} = req.body;            
 
             const id = req.params.id;
 
@@ -30,12 +30,12 @@ class DiscountController {
 
             const result = await DiscountService.update({
                 id, 
-                discount_type, 
+                discountType, 
                 value, 
-                min_order_value,
-                max_discount, 
-                start_date, 
-                end_date
+                minOrderValue,
+                maxDiscount, 
+                startDate, 
+                endDate
             });
 
             res.status(200).json(result);
@@ -90,7 +90,10 @@ class DiscountController {
             if (!userId) return res.status(401).json({ success: false, message: 'Unauthenticated' });
 
             const discounts = await DiscountService.getAvailableForUser(userId);
-            return res.status(200).json({ success: true, data: discounts });
+            return res.status(200).json({
+                 success: true,
+                 message: discounts.length > 0 ? 'Danh sách mã giảm giá khả dụng' : 'Không có mã giảm giá khả dụng',
+                 data: discounts });
         } catch (error) {
             next(error);
         }

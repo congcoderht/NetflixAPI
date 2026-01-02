@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const swaggerAutogen = require('swagger-autogen')();
+const swaggerAutogen = require('swagger-autogen')({
+  openapi: '3.0.0',
+  writeOutputFile: true
+});
 
 const outputFile = './swagger_output.json';
 // Only scan server.js; it already mounts all routes with correct prefixes.

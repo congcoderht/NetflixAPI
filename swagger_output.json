@@ -22,41 +22,122 @@
       "User": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "example": 1
-          },
-          "email": {
+          "type": {
             "type": "string",
-            "example": "user@example.com"
+            "example": "object"
           },
-          "username": {
-            "type": "string",
-            "example": "VanAn17"
-          },
-          "full_name": {
-            "type": "string",
-            "example": "Nguyen Van An"
+          "properties": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "integer"
+                  },
+                  "example": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "email": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "user@example.com"
+                  }
+                }
+              },
+              "username": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "VanAn17"
+                  }
+                }
+              },
+              "full_name": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "example": {
+                    "type": "string",
+                    "example": "Nguyen Van An"
+                  }
+                }
+              }
+            }
           }
         }
       },
       "AuthResponse": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean"
+          "type": {
+            "type": "string",
+            "example": "object"
           },
-          "message": {
-            "type": "string"
-          },
-          "data": {
+          "properties": {
             "type": "object",
             "properties": {
-              "user": {
-                "$ref": "#/components/schemas/User"
+              "success": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "boolean"
+                  }
+                }
               },
-              "token": {
-                "type": "string"
+              "message": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                }
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "example": "object"
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "user": {
+                        "$ref": "#/components/schemas/User"
+                      },
+                      "token": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "example": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -142,17 +223,13 @@
             "description": "Created"
           }
         },
-        "tags": [
-          "Authentication"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "full_name": {
+                  "fullName": {
                     "example": "any"
                   },
                   "username": {
@@ -168,7 +245,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "Authentication"
+        ]
       }
     },
     "/api/auth/login": {
@@ -179,11 +259,7 @@
             "description": "OK"
           }
         },
-        "tags": [
-          "Authentication"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -199,7 +275,10 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "Authentication"
+        ]
       }
     },
     "/api/auth/me": {
@@ -243,20 +322,16 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Authentication"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "current_password": {
+                  "currentPassword": {
                     "example": "any"
                   },
-                  "new_password": {
+                  "newPassword": {
                     "example": "any"
                   }
                 }
@@ -264,6 +339,9 @@
             }
           }
         },
+        "tags": [
+          "Authentication"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -419,11 +497,7 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Users"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -449,6 +523,9 @@
             }
           }
         },
+        "tags": [
+          "Users"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -629,11 +706,7 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Movies"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -647,6 +720,9 @@
             }
           }
         },
+        "tags": [
+          "Movies"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -696,11 +772,7 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Movies"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -717,6 +789,9 @@
             }
           }
         },
+        "tags": [
+          "Movies"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -751,11 +826,7 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Movies"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -769,6 +840,9 @@
             }
           }
         },
+        "tags": [
+          "Movies"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1079,6 +1153,91 @@
         ]
       }
     },
+    "/api/orders/": {
+      "post": {
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "planId": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/orders/apply-discount": {
+      "put": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderId": {
+                    "example": "any"
+                  },
+                  "discountId": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Orders"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/orders/{id}/status": {
       "put": {
         "description": "",
@@ -1106,11 +1265,7 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Orders"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -1124,6 +1279,9 @@
             }
           }
         },
+        "tags": [
+          "Orders"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1190,11 +1348,7 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Discounts"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -1203,22 +1357,22 @@
                   "code": {
                     "example": "any"
                   },
-                  "discount_type": {
+                  "discountType": {
                     "example": "any"
                   },
                   "value": {
                     "example": "any"
                   },
-                  "min_order_value": {
+                  "minOrderValue": {
                     "example": "any"
                   },
-                  "max_discount": {
+                  "maxDiscount": {
                     "example": "any"
                   },
-                  "start_date": {
+                  "startDate": {
                     "example": "any"
                   },
-                  "end_date": {
+                  "endDate": {
                     "example": "any"
                   }
                 }
@@ -1226,6 +1380,9 @@
             }
           }
         },
+        "tags": [
+          "Discounts"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -1242,6 +1399,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         },
         "tags": [
@@ -1281,32 +1441,28 @@
             "description": "Forbidden"
           }
         },
-        "tags": [
-          "Discounts"
-        ],
         "requestBody": {
-          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "discount_type": {
+                  "discountType": {
                     "example": "any"
                   },
                   "value": {
                     "example": "any"
                   },
-                  "min_order_value": {
+                  "minOrderValue": {
                     "example": "any"
                   },
-                  "max_discount": {
+                  "maxDiscount": {
                     "example": "any"
                   },
-                  "start_date": {
+                  "startDate": {
                     "example": "any"
                   },
-                  "end_date": {
+                  "endDate": {
                     "example": "any"
                   }
                 }
@@ -1314,6 +1470,9 @@
             }
           }
         },
+        "tags": [
+          "Discounts"
+        ],
         "security": [
           {
             "bearerAuth": []

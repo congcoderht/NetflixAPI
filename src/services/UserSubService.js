@@ -5,7 +5,7 @@ class UserSubService {
     static async getCurrentSub(userId) {
         try {
             const current_sub = await SubRepository.getUserCurrentSub(userId);
-
+            if(!current_sub) return null;
             const response = {
                 planId: current_sub.plan_id,
                 name: current_sub.name,

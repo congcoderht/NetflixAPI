@@ -62,7 +62,7 @@ class AuthController {
         success: true,
         data: {
           user,
-          current_plan: current_plan
+          currentPlan: current_plan
         }
       })
     } catch (error) {
@@ -73,16 +73,16 @@ class AuthController {
   static async changePassword(req, res, next) {
     try {
       const userId = req.user.id;
-      const {current_password, new_password} = req.body;
+      const {currentPassword, newPassword} = req.body;
 
-      if(!current_password || !new_password){
+      if(!currentPassword || !newPassword){
         return res.status(400).json({
           success: false,
           message: "Vui lòng nhập mật khẩu cũ và mật khẩu mới"
         });
       }
 
-      const result = await AuthService.changePassword(userId, current_password, new_password);
+      const result = await AuthService.changePassword(userId, currentPassword, newPassword);
 
       if(!result.success){
         return res.status(400).json(result);

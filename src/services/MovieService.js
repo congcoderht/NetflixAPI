@@ -128,11 +128,11 @@ class MovieService {
         const movieId = await MovieRepository.createMovie({
             title: payload.title,
             description: payload.description || null,
-            release_year: payload.release_year || null,
-            poster_url: payload.poster_url || null,
-            banner_url: payload.banner_url || null,
-            trailer_url: payload.trailer_url || null,
-            movie_url: payload.url_phim || null
+            releaseYear: payload.releaseYear || null,
+            posterUrl: payload.posterUrl || null,
+            bannerUrl: payload.bannerUrl || null,
+            trailerUrl: payload.trailerUrl || null,
+            movieUrl: payload.movieUrl || null
         });
 
         // link genres by ID (genres already created via POST /genres)
@@ -145,10 +145,10 @@ class MovieService {
         }
 
         // link cast members by ID (members already created via POST /members)
-        if (Array.isArray(payload.cast_and_crew)) {
-            for (const c of payload.cast_and_crew) {
-                if (c.member_id) {
-                    await MovieRepository.linkAttend(movieId, Number(c.member_id), c.role || null);
+        if (Array.isArray(payload.castAndCrew)) {
+            for (const c of payload.castAndCrew) {
+                if (c.memberId) {
+                    await MovieRepository.linkAttend(movieId, Number(c.memberId), c.role || null);
                 }
             }
         }
@@ -164,11 +164,11 @@ class MovieService {
         await MovieRepository.updateMovie(Number(movieId), {
             title: payload.title || null,
             description: payload.description || null,
-            release_year: payload.release_year || null,
-            poster_url: payload.poster_url || null,
-            banner_url: payload.banner_url || null,
-            trailer_url: payload.trailer_url || null,
-            movie_url: payload.url_phim || null
+            releaseYear: payload.releaseYear || null,
+            posterUrl: payload.posterUrl || null,
+            bannerUrl: payload.bannerUrl || null,
+            trailerUrl: payload.trailerUrl || null,
+            movieUrl: payload.movieUrl || null
         });
 
         // remove existing links
@@ -178,17 +178,17 @@ class MovieService {
         // re-link genres
         if (Array.isArray(payload.genres)) {
             for (const g of payload.genres) {
-                if (g.genres_id) {
-                    await MovieRepository.linkGenreToMovie(Number(movieId), Number(g.genres_id));
+                if (g.genresId) {
+                    await MovieRepository.linkGenreToMovie(Number(movieId), Number(g.genresId));
                 }
             }
         }
 
         // re-link cast members
-        if (Array.isArray(payload.cast_and_crew)) {
-            for (const c of payload.cast_and_crew) {
-                if (c.member_id) {
-                    await MovieRepository.linkAttend(Number(movieId), Number(c.member_id), c.role || null);
+        if (Array.isArray(payload.castAndCrew)) {
+            for (const c of payload.castAndCrew) {
+                if (c.memberId) {
+                    await MovieRepository.linkAttend(Number(movieId), Number(c.memberId), c.role || null);
                 }
             }
         }
