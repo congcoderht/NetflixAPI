@@ -17,7 +17,7 @@ class UserController {
         limitNumber = 10;
       }
 
-      const {rows, total, page: currentPage, limit: currentLimit} = await UserService.getAllUsers({
+      const {users, total, page: currentPage, limit: currentLimit} = await UserService.getAllUsers({
         search,
         page: pageNumber,
         limit: limitNumber,
@@ -28,14 +28,12 @@ class UserController {
 
       res.status(200).json({
         success: true,
-        data: {
-          items: rows,
-          pagination: {
-            page: currentPage,
-            limit: currentLimit,
-            total: total,
-            totalPages
-          }
+        data:users,
+        pagination: {
+          page: currentPage,
+          limit: currentLimit,
+          total: total,
+          totalPages
         }
       });
     } catch (error) {

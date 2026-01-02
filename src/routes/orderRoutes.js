@@ -18,6 +18,6 @@ router.post('/', authorize("user"), OrderController.createSubscriptionOrder);
 router.put('/apply-discount', authorize("user"), OrderController.applyDiscountToOrder);
 
 // cập nhật trạng thái đơn hàng
-router.put('/:id/status', authorize("user"), OrderController.updateStatus);
+router.put('/:id/status', authorize("user", "admin"), OrderController.updateStatus);
 
 module.exports = router;

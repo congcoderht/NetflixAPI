@@ -131,9 +131,24 @@ class DiscountService {
                 min_order_value
             });
 
+            const updatedDiscount = await DiscountRepository.findById(id);
+
+            const discountResponse = {
+                discountId: updatedDiscount.discount_id,
+                code: updatedDiscount.code,
+                discountType: updatedDiscount.discount_type,
+                value: updatedDiscount.value,
+                minOrderValue: updatedDiscount.min_order_value,
+                maxDiscount: updatedDiscount.max_discount,
+                startDate: updatedDiscount.start_date,
+                endDate: updatedDiscount.end_date,
+                createdAt: updatedDiscount.created_at,
+            };
+
             return {
                 success: true,
-                message: "Cập nhật mã giảm giá thành công"
+                message: "Cập nhật mã giảm giá thành công",
+                data: discountResponse
             }
         }catch(error) {
             throw new Error(`Lỗi khi cập nhật mã giảm giá: ${error}`);
@@ -146,8 +161,21 @@ class DiscountService {
 
             const {rows, total} = await DiscountRepository.getAll({offset, limit, search});
 
+            const discounts = rows.map(d => ({
+                discountId: d.discount_id,
+                code: d.code,
+                discountType: d.discount_type,
+                value: d.value,
+                minOrderValue: d.min_order_value,
+                maxDiscount: d.max_discount,
+                startDate: d.start_date,
+                endDate: d.end_date,
+                createdAt: d.created_at,
+            }));
+
+
             return {
-                rows, 
+                discounts, 
                 total, 
                 page, 
                 limit

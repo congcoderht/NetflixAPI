@@ -11,7 +11,7 @@ router.post('/login', AuthController.login);
 router.use(authenticate);
 
 router.get('/me', authorize("user", "admin"), AuthController.getMe);
-router.put('/change-pass', authorize("user"), AuthController.changePassword);
+router.put('/change-pass', authorize("user", "admin"), AuthController.changePassword);
 
 
 module.exports = router;

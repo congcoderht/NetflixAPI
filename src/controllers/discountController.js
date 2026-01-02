@@ -60,7 +60,7 @@ class DiscountController {
                 limitNumber = 10;
             }
 
-            const {rows, total, page: currentPage, limit:currentLimit} = await DiscountService.getAll({
+            const {discounts, total, page: currentPage, limit:currentLimit} = await DiscountService.getAll({
                 page: pageNumber,
                 limit: limitNumber,
                 search
@@ -70,14 +70,12 @@ class DiscountController {
 
             return res.status(200).json({
                 success: true,
-                data: {
-                    discounts: rows,
-                    pagination: {
-                        page: currentPage,
-                        limit: currentLimit,
-                        total,
-                        totalPages
-                    }
+                data: discounts,
+                pagination: {
+                    page: currentPage,
+                    limit: currentLimit,
+                    total,
+                    totalPages
                 }
             })
 

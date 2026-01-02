@@ -5,7 +5,7 @@ class MovieStatsService {
 
     static async getTotal() {
         try {
-            const result = MovieRepository.countTotal();
+            const result = await MovieRepository.countTotal();
 
             return result;
         }catch(error) {
@@ -15,9 +15,22 @@ class MovieStatsService {
 
     static async getMostWatch() {
         try {
-            const result = MovieRepository.findMostView();
+            const result = await MovieRepository.findMostView();
 
-            return result;
+            const moviesResponse = result.map(movie => ({
+                movieId: movie.movie_id,
+                title: movie.title,
+                description: movie.description,
+                releaseYear: movie.release_year,
+                posterUrl: movie.poster_url,
+                trailerUrl: movie.trailer_url,
+                movieUrl: movie.url_phim,
+                bannerUrl: movie.banner_url,
+                totalViews: movie.total_views,
+                isDeleted: movie.is_deleted,
+            }));
+
+            return moviesResponse;
         }catch(error) {
             throw new Error(`Lỗi khi lấy danh sách phim được xem nhiều: ${error}`);
         }
@@ -25,9 +38,23 @@ class MovieStatsService {
 
     static async getHighRating() {
         try {
-            const result = MovieRepository.findHighRating();
+            const result = await MovieRepository.findHighRating();
 
-            return result;
+            const moviesResponse = result.map(movie => ({
+                movieId: movie.movie_id,
+                title: movie.title,
+                description: movie.description,
+                releaseYear: movie.release_year,
+                posterUrl: movie.poster_url,
+                trailerUrl: movie.trailer_url,
+                movieUrl: movie.url_phim,
+                bannerUrl: movie.banner_url,
+                isDeleted: movie.is_deleted,
+                avgRating: movie.avg_rating,
+                ratingCount: movie.rating_count
+            }));
+
+            return moviesResponse;
         }catch(error) {
             throw new Error(`Lỗi khi lấy danh sách phim được đánh giá cao nhất: ${error}`);
         }
@@ -35,9 +62,23 @@ class MovieStatsService {
 
     static async getMostWatchTime() {
         try {
-            const result = MovieRepository.findMostWatchTime();
+            const result = await MovieRepository.findMostWatchTime();
 
-            return result;
+            const moviesResponse = result.map(movie => ({
+                movieId: movie.movie_id,
+                title: movie.title,
+                description: movie.description,
+                releaseYear: movie.release_year,
+                posterUrl: movie.poster_url,
+                trailerUrl: movie.trailer_url,
+                movieUrl: movie.url_phim,
+                bannerUrl: movie.banner_url,
+                isDeleted: movie.is_deleted,
+                avgRating: movie.avg_rating,
+                ratingCount: movie.rating_count
+            }));
+
+            return moviesResponse;
         }catch(error) {
             throw new Error(`Lỗi khi lấy danh sách phim có tổng thời gian xem cao nhất: ${error}`);
         }
@@ -45,9 +86,16 @@ class MovieStatsService {
 
     static async getMostWatchedMembers() {
         try {
-            const result = CastMemberRepository.findMostWatchedMembers();
+            const result = await CastMemberRepository.findMostWatchedMembers();
 
-            return result;
+            const membersRespose = result.map(mem => ({
+                memberId: mem.member_id,
+                name: mem.name,
+                birthday: mem.birthday,
+                totalWatch: mem.total_watch
+            }))
+
+            return membersRespose;
         }catch(error) {
             throw new Error(`Lỗi khi lấy diễn viên được xem nhiều nhất`)
         }

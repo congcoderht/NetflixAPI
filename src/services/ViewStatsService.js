@@ -14,7 +14,7 @@ class ViewStatsService {
 
     static async getOverview() {
         try {
-            const [today, this_week, this_month, last_Month, this_year] = await Promise.all([
+            const [today, thisWeek, thisMonth, lastMonth, thisYear] = await Promise.all([
                 UserHistoryRepository.countViewsToday(),
                 UserHistoryRepository.countViewsThisWeek(),
                 UserHistoryRepository.countViewsThisMonth(),
@@ -24,10 +24,10 @@ class ViewStatsService {
 
             return {
                 today,
-                this_week,
-                this_month,
-                last_Month, 
-                this_year
+                thisWeek,
+                thisMonth,
+                lastMonth, 
+                thisYear
             }
         }catch(error) {
             throw new Error(`Lỗi khi lấy báo cáo lượt xem: ${error}`);

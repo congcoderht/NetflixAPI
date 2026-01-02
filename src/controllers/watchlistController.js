@@ -10,7 +10,7 @@ class WatchListController {
             let pageNumber = Number(page);
             let limitNumber = Number(limit);
 
-            const {rows, total, page: currentPage, limit: currentLimit} = await WatchListService.getByUserId({
+            const {watchList, total, page: currentPage, limit: currentLimit} = await WatchListService.getByUserId({
                 id, 
                 page: pageNumber,
                 limit: limitNumber
@@ -20,7 +20,7 @@ class WatchListController {
 
             res.status(200).json({
                 success: true,
-                movies: rows,
+                data: watchList,
                 pagination: {
                     page: currentPage,
                     limit: currentLimit,

@@ -207,6 +207,18 @@ class DiscountRepository {
         return result.recordset.length > 0;
     }
 
+    // Kiểm tra mã giảm giá tồn tại
+    static async existDiscountId(id) {
+        let query = `
+            SELECT TOP 1 1
+            FROM Discounts
+            WHERE discount_id = ?
+        `;
+
+        const result = await execute(query, [id]);
+        return result.recordset.length > 0;
+    }
+
 
    
 }
