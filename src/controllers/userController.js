@@ -137,8 +137,8 @@ class UserController {
       
       const payload = {};
 
-      if (typeof req.body.full_name === "string") {
-        const fullName = req.body.full_name.trim();
+      if (typeof req.body.fullName === "string") {
+        const fullName = req.body.fullName.trim();
 
         if (fullName.length === 0) {
           return res.status(400).json({
@@ -158,8 +158,8 @@ class UserController {
         payload.gender = req.body.gender.trim();
       }
 
-      if(typeof req.body.phone_number === "string") {
-        payload.phone_number = req.body.phone_number.trim();
+      if(typeof req.body.phoneNumber === "string") {
+        payload.phone_number = req.body.phoneNumber.trim();
       }
 
       const birthday = req.body.birthday;

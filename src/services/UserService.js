@@ -129,7 +129,7 @@ class UserService {
       return {
         success: true,
         data: {
-          userResponse,
+          user: userResponse,
           subscriptions: subscriptionsResponse || [],
           orders: ordersResponse || [],
           history: historyResponse || [],

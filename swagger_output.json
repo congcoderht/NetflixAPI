@@ -503,7 +503,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "full_name": {
+                  "fullName": {
                     "example": "any"
                   },
                   "avatar": {
@@ -512,7 +512,7 @@
                   "gender": {
                     "example": "any"
                   },
-                  "phone_number": {
+                  "phoneNumber": {
                     "example": "any"
                   },
                   "birthday": {

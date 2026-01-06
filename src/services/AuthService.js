@@ -11,7 +11,7 @@ class AuthService {
   /**
    * Đăng ký user mới
    */
-  static async register(username, email, password, full_name) {
+  static async register(username, email, password, fullName) {
     try {
 
       if (!username || !email || !password) {
@@ -51,7 +51,7 @@ class AuthService {
         username: username.trim(),
         email: email.trim().toLowerCase(),
         password: hashedPassword,
-        full_name: full_name,
+        full_name: fullName,
         role: "USER",
       });
 
@@ -157,8 +157,8 @@ class AuthService {
         message: 'Đăng nhập thành công',
         data: {
           user: userResponse,
-          access_token: token,
-          expires_in: config.jwt.expiresIn
+          accessToken: token,
+          expiresIn: config.jwt.expiresIn
         }
       };
     } catch (error) {
