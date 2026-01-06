@@ -191,13 +191,13 @@ class DiscountService {
             const rows = await DiscountRepository.findAvailableForUser(userId);
             // map to API DTO
             return (rows || []).map(r => ({
-                discountId: r.discount_id,
+                discountId: r.discountId,
                 code: r.code,
-                discountType: r.discount_type,
+                discountType: r.discountType,
                 value: r.value,
-                minOrderValue: r.min_order_value,
-                maxDiscount: r.max_discount,
-                endDate: r.end_date,
+                minOrderValue: r.minOrderValue,
+                maxDiscount: r.maxDiscount,
+                endDate: r.endDate,
                 isUsed: false
             }));
         } catch (error) {

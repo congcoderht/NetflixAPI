@@ -130,8 +130,9 @@ class DiscountRepository {
                 d.max_discount as maxDiscount,
                 d.end_date as endDate
             FROM Discounts d
-            LEFT JOIN Orders o ON o.discount_id = d.discount_id AND o.user_id = ?
-            WHERE o.order_id IS NULL
+            LEFT JOIN User_Discounts o ON o.discount_id = d.discount_id
+            WHERE o.user_id = ?
+              AND o.is_used = 0
               AND (d.end_date IS NULL OR d.end_date >= GETDATE())
               AND (d.start_date IS NULL OR d.start_date <= GETDATE())
             ORDER BY d.end_date ASC

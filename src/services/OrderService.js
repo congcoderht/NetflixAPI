@@ -347,11 +347,6 @@ class OrderService {
                 return { success: false, message: 'Đơn hàng không tồn tại' };
             }
 
-            // Check if order already has discount applied
-            if (order.discount_id) {
-                return { success: false, message: 'Đơn hàng này đã áp dụng mã giảm giá rồi, không thể áp mã khác' };
-            }
-
             // Get discount by ID
             const discount = await DiscountRepository.findById(discountId);
             if (!discount) {
