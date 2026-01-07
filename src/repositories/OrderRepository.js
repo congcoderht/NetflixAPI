@@ -7,6 +7,9 @@ class OrderRepository {
         let query = `
             SELECT 
                 o.order_id, 
+                o.user_id,
+                u.full_name,
+                u.email,
                 o.order_code, 
                 o.order_type, 
                 o.status, 
@@ -21,6 +24,8 @@ class OrderRepository {
                 ON s.plan_id = o.plan_id
             LEFT JOIN Discounts AS d
                 ON o.discount_id = d.discount_id
+            JOIN [User] AS u
+                ON u.user_id = o.user_id
             WHERE o.user_id = ?
             ORDER BY o.paid_at DESC
         `;

@@ -10,6 +10,9 @@ class OrderService {
 
             const ordersResponse = orders.map(o => ({
                 orderId: o.order_id,
+                userId: o.user_id,
+                email: o.email,
+                fullName: o.full_name,
                 orderCode: o.order_code,
                 orderType: o.order_type,
                 status: o.status,
