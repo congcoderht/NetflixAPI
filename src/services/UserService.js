@@ -1,18 +1,54 @@
 const UserRepository = require('../repositories/UserRepository');
+const OrderRepository = require('../repositories/OrderRepository');
+const SubRepository = require('../repositories/SubRepository');
 const { hashPassword } = require('../utils/password');
+const UserHistoryRepository = require('../repositories/UserHistoryRepository');
+const { generateOrderCode } = require('../utils/orderCode');
 
 /**
  * Service Layer - Business Logic Layer
  * Chịu trách nhiệm xử lý logic nghiệp vụ, validation, và điều phối giữa Repository và Controller
  */
+
+const MAX_LIMIT = 50;
+
 class UserService {
   // Lấy tất cả users
-  static async getAllUsers() {
+  static async getAllUsers(params) {
     try {
-      const users = await UserRepository.findAll();
+      let {search, page, limit, status} = params;
+      
+      page = Math.max(1, page);
+      limit = Math.min(limit , MAX_LIMIT);
+
+      const offset = (page - 1) * limit;
+
+      const {rows, total} = await UserRepository.findAll({
+        search, 
+        page,
+        limit,
+        status,
+        offset
+      });
+
+      const users = rows.map(user => ({
+        userId: user.user_id,
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      }));
+
       return {
-        success: true,
-        data: users
+        users,
+        total,
+        page,
+        limit
       };
     } catch (error) {
       throw new Error(`Lỗi khi lấy danh sách users: ${error.message}`);
@@ -20,13 +56,92 @@ class UserService {
   }
 
   // Lấy user theo ID
-  static async getUserById(id) {
+  static async getDetailedUserById(id) {
     try {
-      if (!id || isNaN(id)) {
-        throw new Error('ID không hợp lệ');
+      const user = await UserRepository.findByIdPublic(id);
+      
+      if (!user) {
+        return {
+          success: false,
+          message: 'Không tìm thấy user',
+          data: null
+        };
       }
 
-      const user = await UserRepository.findById(id);
+      const userResponse = {
+        userId: user.user_id,
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      } 
+
+      const [orders, subscriptions, history] = await Promise.all([
+        OrderRepository.findByUserId(id),
+        SubRepository.findByUserId(id),
+        UserHistoryRepository.findByUserId(id),
+      ]);
+
+      const mapOrderResponse = (order) => ({
+        orderId: order.order_id,
+        orderCode: order.order_code,
+        orderType: order.order_type,
+        status: order.status,
+        amount: order.amount,
+        paidAt: order.paid_at,
+        planId: order.plan_id,
+        planName: order.name,
+        planPrice: order.price,
+        durations: order.durations,
+        description: order.description,
+        discountId: order.discount_id,
+        discountAmount: order.discount_amount,
+        finalAmount: order.final_amount,
+      });
+
+      const mapSubscriptionResponse = (sub) => ({
+        planId: sub.plan_id,
+        name: sub.name,
+        price: sub.price,
+        durations: sub.durations,
+        description: sub.description,
+        isActive: sub.is_active,
+        startDate: sub.start_date,
+        endDate: sub.end_date,
+      });
+
+      const mapHistoryResponse = (h) => ({
+        movieId: h.movie_id,
+        isDone: h.is_done,
+        time: h.time,
+        lastWatchedAt: h.last_watched_at,
+      });
+
+      const ordersResponse = orders.map(mapOrderResponse);
+      const subscriptionsResponse = subscriptions.map(mapSubscriptionResponse);
+      const historyResponse = history.map(mapHistoryResponse);
+
+      return {
+        success: true,
+        data: {
+          user: userResponse,
+          subscriptions: subscriptionsResponse || [],
+          orders: ordersResponse || [],
+          history: historyResponse || [],
+        }
+      };
+    } catch (error) {
+      throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);
+    }
+  }
+  static async getUserById(id) {
+    try {
+      const user = await UserRepository.findByIdPublic(id);
       
       if (!user) {
         return {
@@ -44,54 +159,7 @@ class UserService {
       throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);
     }
   }
-
-  // Tạo user mới
-  static async createUser(userData) {
-    try {
-      const { name, email, password } = userData;
-
-      // Validation
-      if (!name || !email || !password) {
-        throw new Error('Vui lòng điền đầy đủ thông tin (name, email, password)');
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        throw new Error('Email không hợp lệ');
-      }
-
-      // Kiểm tra email đã tồn tại chưa
-      const emailExists = await UserRepository.emailExists(email);
-      if (emailExists) {
-        throw new Error('Email đã được sử dụng');
-      }
-
-      // Validate password length
-      if (password.length < 6) {
-        throw new Error('Mật khẩu phải có ít nhất 6 ký tự');
-      }
-
-      // Hash password
-      const hashedPassword = await hashPassword(password);
-
-      // Tạo user
-      const newUser = await UserRepository.create({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        password: hashedPassword
-      });
-
-      return {
-        success: true,
-        message: 'User được tạo thành công',
-        data: newUser
-      };
-    } catch (error) {
-      throw new Error(`Lỗi khi tạo user: ${error.message}`);
-    }
-  }
-
+  
   // Cập nhật user
   static async updateUser(id, userData) {
     try {
@@ -178,6 +246,98 @@ class UserService {
     } catch (error) {
       throw new Error(`Lỗi khi xóa user: ${error.message}`);
     }
+  }
+
+  // cập nhật profile
+  static async updateProfile(id, payload) {
+    try {
+
+      const existingUser = await UserRepository.findById(id);
+
+      if(!existingUser) {
+        return {
+          success: false,
+          message: "User Không tồn tại"
+        };
+      }
+
+      if (existingUser.status === 'LOCKED') {
+        return {
+          success: false,
+          message: 'Tài khoản đã bị khóa'
+        };
+      }
+
+      const updatedUser = await UserRepository.updateProfile(id, payload);
+
+      if(!updatedUser) {
+        throw new Error("Không thể cập nhật User");
+      }
+
+      const userResponse = {
+        userId: updatedUser.user_id,
+        fullName: updatedUser.full_name,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        avatar: updatedUser.avatar,
+        role: updatedUser.role,
+        status: updatedUser.status,
+        createdAt: updatedUser.created_at,
+        gender: updatedUser.gender,
+        phoneNumber: updatedUser.phone_number,
+        birthday: updatedUser.birthday,
+      };
+
+      return {
+        success: true,
+        message: "Cập nhật hồ sơ thành công",
+        data: userResponse,
+      }
+    }catch(error) {
+      throw new Error(`Lỗi khi cập nhật User: ${error}`);
+    }
+  }
+
+
+  // khóa / mở khóa User
+  static async updateStatus(id) {
+    try {
+      const existingUser = await UserRepository.findById(id);
+
+      if(!existingUser) {
+        return {
+          success: false,
+          message: "User không tồn tại"
+        }
+      }
+
+      const newStatus = existingUser.status === "ACTIVE" ? "LOCKED" : "ACTIVE";
+
+      const updatedUser = await UserRepository.updateStatus(id, newStatus);
+
+      const userResponse = {
+        userId: updatedUser.user_id,
+        fullName: updatedUser.full_name,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        avatar: updatedUser.avatar,
+        role: updatedUser.role,
+        status: updatedUser.status,
+        createdAt: updatedUser.created_at,
+        gender: updatedUser.gender,
+        phoneNumber: updatedUser.phone_number,
+        birthday: updatedUser.birthday,
+      };
+
+      return {
+        success: true,
+        message: "Cập nhật User thành công",
+        data: userResponse
+      }
+    }catch(error){
+      throw new Error(`Lỗi khi cập nhật trạng thái User: ${error.message}`);
+    }
+    
   }
 }
 

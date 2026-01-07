@@ -43,7 +43,7 @@ const authenticate = (req, res, next) => {
 };
 
 /**
- * Middleware kiểm tra quyền (optional - có thể mở rộng sau)
+ * Middleware kiểm tra quyền 
  */
 const authorize = (...roles) => {
   return (req, res, next) => {
@@ -54,9 +54,13 @@ const authorize = (...roles) => {
       });
     }
 
-    // Có thể thêm logic kiểm tra role ở đây
-    // Ví dụ: if (!roles.includes(req.user.role)) { ... }
     
+    if (roles.length && !roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Không có quyền truy cập'
+      });
+    }
     next();
   };
 };

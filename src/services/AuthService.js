@@ -1,6 +1,8 @@
 const UserRepository = require('../repositories/UserRepository');
-const { comparePassword } = require('../utils/password');
+const { comparePassword, hashPassword } = require('../utils/password');
 const { generateToken } = require('../utils/jwt');
+const SubRepository = require('../repositories/SubRepository');
+const config = require('../config/env');
 
 /**
  * Service Layer - Authentication Logic
@@ -9,103 +11,154 @@ class AuthService {
   /**
    * Đăng ký user mới
    */
-  static async register(userData) {
+  static async register(username, email, password, fullName) {
     try {
-      const { name, email, password } = userData;
 
-      // Validation
-      if (!name || !email || !password) {
-        throw new Error('Vui lòng điền đầy đủ thông tin (name, email, password)');
+      if (!username || !email || !password) {
+        return { success: false, message: "Vui lòng điền đầy đủ thông tin!" };
       }
 
-      // Validate email format
+      if (username.trim().length < 2) {
+        return { success: false, message: "Tên quá ngắn!" };
+      }
+
+      // validate email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        throw new Error('Email không hợp lệ');
+        return { success: false, message: "Email không hợp lệ" };
       }
 
-      // Kiểm tra email đã tồn tại chưa
+      //check email exists
       const emailExists = await UserRepository.emailExists(email);
       if (emailExists) {
-        throw new Error('Email đã được sử dụng');
+        return { success: false, message: "Email đã được sử dụng" };
       }
 
-      // Validate password length
+      //check username
+      const usernameExists = await UserRepository.existUsername(username) 
+      if(usernameExists) {
+        return { success: false, message: "username đã được sử dụng" };
+      }
+
       if (password.length < 6) {
-        throw new Error('Mật khẩu phải có ít nhất 6 ký tự');
+        return { success: false, message: "Mật khẩu phải có ít nhất 6 kí tự" };
       }
 
-      // Hash password và tạo user
-      const { hashPassword } = require('../utils/password');
+      const { hashPassword } = require("../utils/password");
       const hashedPassword = await hashPassword(password);
 
       const newUser = await UserRepository.create({
-        name: name.trim(),
+        username: username.trim(),
         email: email.trim().toLowerCase(),
-        password: hashedPassword
+        password: hashedPassword,
+        full_name: fullName,
+        role: "USER",
       });
 
-      // Tạo JWT token
-      const token = generateToken({
-        id: newUser.id,
-        email: newUser.email
-      });
+      // remove password in response
+      delete newUser.password;
 
-      // Loại bỏ password khỏi response
-      const { password: _, ...userWithoutPassword } = newUser;
+      const userResponse = {
+        userId: newUser.user_id,
+        fullName: newUser.full_name,
+        username: newUser.username,
+        email: newUser.email,
+        avatar: newUser.avatar,
+        role: newUser.role,
+        status: newUser.status,
+        createdAt: newUser.created_at,
+        gender: newUser.gender,
+        birthday: newUser.birthday,
+      }
 
       return {
         success: true,
-        message: 'Đăng ký thành công',
+        message: "Đăng ký thành công",
         data: {
-          user: userWithoutPassword,
-          token
-        }
+          user: userResponse,
+        },
       };
+
     } catch (error) {
+      console.error("Register error:", error);
       throw new Error(`Lỗi khi đăng ký: ${error.message}`);
     }
   }
 
   /**
-   * Đăng nhập
+   * Đăng nhập user
    */
   static async login(email, password) {
     try {
+
       // Validation
       if (!email || !password) {
-        throw new Error('Vui lòng nhập email và mật khẩu');
+        return {
+          success: false,
+          code: "VALIDATION_ERROR",
+          message: "Vui lòng nhập email và mật khẩu",
+        };
       }
 
       // Tìm user theo email
       const user = await UserRepository.findByEmail(email.trim().toLowerCase());
       
       if (!user) {
-        throw new Error('Email hoặc mật khẩu không đúng');
+        return {
+          success: false,
+          code: "EMAIL_NOT_FOUND",
+          message: "Email Không tồn tại"
+        };
       }
 
       // So sánh password
       const isPasswordValid = await comparePassword(password, user.password);
       
       if (!isPasswordValid) {
-        throw new Error('Email hoặc mật khẩu không đúng');
+         return {
+          success: false,
+          code: "INVALID_PASSWORD",
+          message: "Mật khẩu không chính xác"
+        };
+      }
+
+      //kiểm tra status (ACTIVE/ LOCKED)
+      if(user.status === "LOCKED"){
+        return {
+          success: false,
+          code: "LOCKED",
+          message: "Tài khoản đã bị khóa"
+        };
       }
 
       // Tạo JWT token
       const token = generateToken({
-        id: user.id,
-        email: user.email
+        id: user.user_id,
+        email: user.email,
+        role: user.role.toLowerCase(),
       });
 
-      // Loại bỏ password khỏi response
-      const { password: _, ...userWithoutPassword } = user;
+      // Loại bỏ password và role khỏi response
+      const userResponse = {
+        userId: user.user_id,
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      }
 
       return {
         success: true,
         message: 'Đăng nhập thành công',
         data: {
-          user: userWithoutPassword,
-          token
+          user: userResponse,
+          accessToken: token,
+          expiresIn: config.jwt.expiresIn
         }
       };
     } catch (error) {
@@ -118,18 +171,64 @@ class AuthService {
    */
   static async getCurrentUser(userId) {
     try {
-      const user = await UserRepository.findById(userId);
+      const user = await UserRepository.findByIdPublic(userId);
       
       if (!user) {
         throw new Error('Không tìm thấy user');
       }
 
-      return {
-        success: true,
-        data: user
-      };
+      const userResponse = {
+        userId: user.user_id,
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        status: user.status,
+        createdAt: user.created_at,
+        gender: user.gender,
+        birthday: user.birthday,
+      }
+      return userResponse;
+
     } catch (error) {
       throw new Error(`Lỗi khi lấy thông tin user: ${error.message}`);
+    }
+  }
+
+  /**
+   * Dổi mật khẩu user
+   */
+  static async changePassword(userId, current_password, new_password) {
+    try {
+      const user = await UserRepository.findById(userId);
+
+      if(!user){
+        return {
+          success: false,
+          message: "Không tìm thấy người dùng"
+        }
+      }
+
+      const isPasswordValid = await comparePassword(current_password, user.password);
+      if(!isPasswordValid){
+        return {
+          success: false,
+          message: "Mật khẩu cũ không chính xác"
+        }
+      }
+
+      const hashedNewPassword = await hashPassword(new_password);
+
+      await UserRepository.updatePassword(userId, hashedNewPassword);
+
+      return {
+        success: true,
+        message: "Đổi mật khẩu thành công"
+      };
+
+    }catch(error){
+      throw new Error(`lỗi đổi mật khẩu: ${error.message}`);
     }
   }
 }

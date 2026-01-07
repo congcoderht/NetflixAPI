@@ -1,5 +1,6 @@
 const { ConnectionPool } = require('mssql');
 const config = require('./env');
+const { xContentTypeOptions } = require('helmet');
 
 // Cấu hình cơ bản chung cho cả SQL Auth và Windows Auth
 const baseConfig = {
@@ -61,7 +62,7 @@ function mapPlaceholders(query) {
   return query.replace(/\?/g, () => `@p${index++}`);
 }
 
-async function getPool() {
+async function getPool() {xContentTypeOptions 
   await poolConnect;
   return pool;
 }

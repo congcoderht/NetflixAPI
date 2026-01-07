@@ -19,16 +19,7 @@ app.use(morgan('dev')); // Logging requests
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
-/**
- * @swagger
- * /health:
- *   get:
- *     summary: Kiểm tra trạng thái server
- *     tags: [Health]
- *     responses:
- *       200:
- *         description: Server đang hoạt động
- */
+
 app.get('/health', (req, res) => {
   res.json({
     success: true,

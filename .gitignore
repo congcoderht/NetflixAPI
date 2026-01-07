@@ -2,6 +2,7 @@
 node_modules/
 package-lock.json
 yarn.lock
+hash.json
 
 # Environment variables
 .env
@@ -30,3 +31,5 @@ Thumbs.db
 dist/
 build/
 
+# Others
+swagger-output.json
