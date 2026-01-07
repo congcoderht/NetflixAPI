@@ -20,6 +20,7 @@ class WatchListService {
                 movieUrl: w.url_phim,
                 bannerUrl: w.banner_url,
                 isDeleted: w.is_deleted,
+                genres: w.genres
             }));
 
 
