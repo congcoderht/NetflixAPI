@@ -20,9 +20,10 @@ class WatchListService {
                 movieUrl: w.url_phim,
                 bannerUrl: w.banner_url,
                 isDeleted: w.is_deleted,
+                genres: w.genres ? w.genres.split(",") : []
             }));
 
-
+            
             return {watchList, total, page, limit};
 
         }catch(error) {

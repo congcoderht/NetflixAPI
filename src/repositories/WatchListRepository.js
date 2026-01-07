@@ -4,12 +4,37 @@ class WatchListRepository {
 
     static async findByUserId({id, offset, limit}) {
         let dataQuery = `
-            SELECT m.* 
+            SELECT 
+                m.movie_id,
+                m.title,
+                m.description,
+                m.release_year,
+                m.poster_url,
+                m.banner_url,
+                m.trailer_url,
+                m.url_phim,
+                STRING_AGG(g.name, ',') WITHIN GROUP (ORDER BY g.name) AS genres
             FROM User_Favorite AS uf
-            JOIN Movie AS m ON m.movie_id = uf.movie_id
-            WHERE uf.user_id = ?
-            ORDER BY uf.movie_id DESC
-            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+            JOIN Movie AS m 
+                ON m.movie_id = uf.movie_id
+            JOIN Genres_Film AS gf 
+                ON m.movie_id = gf.movie_id
+            JOIN Genres AS g 
+                ON gf.genres_id = g.genres_id
+            WHERE 
+                uf.user_id = ?
+                AND m.is_deleted = 0
+            GROUP BY 
+                m.movie_id,
+                m.title,
+                m.description,
+                m.release_year,
+                m.poster_url,
+                m.banner_url,
+                m.trailer_url,
+                m.url_phim
+            ORDER BY m.movie_id DESC
+            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;
         `;
 
         let countQuery = `
