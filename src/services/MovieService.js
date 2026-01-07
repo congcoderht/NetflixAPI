@@ -214,6 +214,28 @@ class MovieService {
     }
 
 
+    // static async getTopRatedMovies() {
+    //     const movies = await MovieRepository.findTopRatedMovies(5);
+    //     return (movies || []).map(movie => ({
+    //         movieId: movie.movie_id,
+    //         title: movie.title,
+    //         description: movie.description,
+    //         releaseYear: movie.release_year,
+    //         posterUrl: movie.poster_url,
+    //         bannerUrl: movie.banner_url,
+    //         trailerUrl: movie.trailer_url,
+    //         movieUrl: movie.url_phim,
+    //         avgRating: movie.avg_rating,
+    //         genres: movie.genres && movie.genres.length > 0
+    //             ? movie.genres.split(',').map(g => g.trim())
+    //             : [],
+    //         actors: (actors || []).map(actor => ({
+    //             memberId: actor.member_id,
+    //             name: actor.name,
+    //             role: actor.role
+    //         }))
+    //     }));
+    // }   
 }
 
 module.exports = MovieService;

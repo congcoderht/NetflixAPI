@@ -174,7 +174,15 @@ class MovieController {
         next(error);
     }
     }
-
+    
+    // static async getTopRatedMovies(req, res) {
+    //     try {
+    //         const data = await MovieService.getTopRatedMovies();
+    //         res.json({ success: true, data });
+    //     } catch (error) {
+    //         res.status(500).json({ success: false, message: error.message });
+    //     }
+    // }
    
 }
 

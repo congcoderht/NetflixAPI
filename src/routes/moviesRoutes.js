@@ -29,6 +29,8 @@ router.put('/:id/rating', authorize("user"), MovieController.rateMovie);
 // Xem chi tiết phim theo ID
 router.get('/:id', authorize("user","admin"), MovieController.getMovieDetail);
 
+// // Lấy top 5 phim được đánh giá cao nhất
+// router.get('/top-rated', authorize("user","admin"), MovieController.getTopRatedMovies);
 
 // Tạo phim mới (chỉ admin) - genres và members phải được tạo trước
 router.post('/', authorize("admin"), MovieController.createMovie);

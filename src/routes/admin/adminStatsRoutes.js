@@ -4,7 +4,7 @@ const AdminStatsController = require("../../controllers/admin/adminStatsControll
 const { authenticate,authorize } = require("../../middleware/auth");
 
 router.use(authenticate);
-router.use(authorize("admin"));
+router.use(authorize("admin","user"));
 
 router.get('/dashboard', AdminStatsController.getDashboardOverview);
 router.get('/revenue', AdminStatsController.getRevenueOverview);
