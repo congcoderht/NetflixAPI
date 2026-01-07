@@ -95,19 +95,6 @@ Client Response ← Route ← Controller ← Service ← Repository ←
 - Bạn chịu trách nhiệm tạo và cập nhật schema trực tiếp trên database đã chuẩn bị.
 - Ứng dụng sẽ kiểm tra kết nối ngay khi start; nếu database hoặc bảng thiếu, quá trình khởi động sẽ dừng lại với thông báo lỗi rõ ràng.
 
-## 📝 API Endpoints
-
-### Health Check
-- `GET /health` - Kiểm tra trạng thái server
-
-### Users
-- Toàn bộ endpoints trong `/api/users` yêu cầu header `Authorization: Bearer <token>`
-- `GET /api/users` - Lấy danh sách users
-- `GET /api/users/:id` - Lấy thông tin user theo ID
-- `POST /api/users` - Tạo user mới
-- `PUT /api/users/:id` - Cập nhật user
-- `DELETE /api/users/:id` - Xóa user
-
 ## 🔐 JWT Authentication
 
 - Đăng ký (`POST /api/auth/register`) hoặc đăng nhập (`POST /api/auth/login`) để nhận JWT.
