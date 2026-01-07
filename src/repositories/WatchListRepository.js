@@ -13,7 +13,7 @@ class WatchListRepository {
                 m.banner_url,
                 m.trailer_url,
                 m.url_phim,
-                STRING_AGG(g.name, ',') AS genres
+                STRING_AGG(g.name, ',') WITHIN GROUP (ORDER BY g.name) AS genres
             FROM User_Favorite AS uf
             JOIN Movie AS m 
                 ON m.movie_id = uf.movie_id
